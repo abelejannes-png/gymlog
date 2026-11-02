@@ -1,6 +1,6 @@
 // Offline-Cache: App läuft auch ohne Internet (z. B. im Gym-Keller).
 // Bei jedem Update VERSION hochzählen, damit das iPhone die neuen Dateien lädt.
-const VERSION = 'gymlog-v5';
+const VERSION = 'gymlog-v6';
 const FILES = [
   './', 'index.html', 'styles.css', 'app.js', 'lexikon.js', 'muskeln.js', 'meal.js', 'manifest.webmanifest',
   'icons/icon-180.png', 'icons/icon-192.png', 'icons/icon-512.png',
@@ -9,7 +9,8 @@ const FILES = [
 ];
 
 self.addEventListener('install', e => {
-  e.waitUntil(caches.open(VERSION).then(c => c.addAll(FILES)).then(() => self.skipWaiting()));
+  // cache: 'reload' umgeht den Browser-Cache, damit wirklich die neuen Dateien gespeichert werden.
+  e.waitUntil(caches.open(VERSION).then(c => c.addAll(FILES.map(f => new Request(f, { cache: 'reload' })))).then(() => self.skipWaiting()));
 });
 
 self.addEventListener('activate', e => {
@@ -24,7 +25,7 @@ self.addEventListener('activate', e => {
 self.addEventListener('fetch', e => {
   if (e.request.method !== 'GET') return;
   e.respondWith(
-    fetch(e.request)
+    fetch(e.request, { cache: 'no-cache' }) // immer beim Server nachfragen, ob es eine neuere Version gibt
       .then(res => {
         const copy = res.clone();
         caches.open(VERSION).then(c => c.put(e.request, copy)).catch(() => {});
