@@ -373,3 +373,21 @@ body.resting .toast { bottom: calc(var(--tabbar-h) + var(--safe-bottom) + 96px);
 .step-num { flex: none; width: 26px; height: 26px; border-radius: 50%; background: rgba(var(--accent-rgb), .15); color: var(--accent); font-weight: 700; font-size: 14px; display: flex; align-items: center; justify-content: center; }
 .article p { margin: 0; font-size: 16px; line-height: 1.5; color: rgba(255,255,255,.88); }
 .article .row span { font-size: 16px; line-height: 1.45; }
+/* ---------- Muskel-Lexikon ---------- */
+.lx-hero { background: rgba(var(--accent-rgb), .12); border-radius: 22px; padding: 18px; display: flex; flex-direction: column; gap: 8px; }
+.lx-nick { font-size: 13px; font-weight: 700; color: var(--accent); text-transform: uppercase; letter-spacing: .6px; }
+.lx-badge { width: 44px; height: 44px; border-radius: 14px; background: rgba(var(--accent-rgb), .15); color: var(--accent); display: flex; align-items: center; justify-content: center; font-size: 22px; flex: none; }
+.lx-m { background: var(--surface); border-radius: 14px; overflow: hidden; }
+.lx-m summary { list-style: none; cursor: pointer; padding: 14px 16px; display: flex; align-items: center; gap: 10px; }
+.lx-m summary::-webkit-details-marker { display: none; }
+.lx-m summary .chev { color: var(--text-3); transition: transform .2s; }
+.lx-m[open] summary .chev { transform: rotate(90deg); }
+.lx-m .lx-body { padding: 0 16px 16px; color: var(--text-2); font-size: 15px; line-height: 1.5; }
+.lx-latin { font-size: 13px; color: var(--text-3); font-style: italic; }
+.lx-chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.lx-chip { font-size: 14px; padding: 6px 12px; border-radius: 999px; background: var(--surface-2); color: var(--text-2); }
+.lx-chip.on { background: rgba(var(--accent-rgb), .16); color: var(--accent); font-weight: 600; }
+.lx-list { display: flex; flex-direction: column; gap: 12px; margin: 0; padding: 0; list-style: none; }
+.lx-list li { display: flex; gap: 12px; line-height: 1.45; font-size: 16px; }
+.lx-list li::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: var(--accent); margin-top: 8px; flex: none; }
+.lx-list.bad li::before { background: var(--red); }

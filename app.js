@@ -1793,6 +1793,19 @@ SCREENS.lexikon = (entry, host) => {
             ${exImage(e, 36)}<div class="col" style="gap:2px;flex:1;text-align:left"><span>${esc(e.name)}</span><span class="caption muted">${esc(d ? d.primary : 'Eigene Übung')}</span></div><span class="chev">${ic('chevR')}</span></button>`; }).join('')}
       </div></div>`;
     }).join('');
+  } else if (st.tab === 'muskeln') {
+    const groups = typeof MUSKEL_LEX !== 'undefined' ? MUSKEL_LEX : [];
+    const li = (icon, title, fn) => `<button class="li ind" data-lx="${esc(title.toLowerCase())}" data-on="${host.on(fn)}"><span class="ic">${ic(icon)}</span><span style="flex:1">${title}</span><span class="chev">${ic('chevR')}</span></button>`;
+    list = `<div data-lx-group><div class="col g12">${groups.map(g => `<div class="card row tap" data-lx="${esc([g.id, g.nick, ...g.muskeln.flatMap(m => [m[0], m[1]])].join(' ').toLowerCase())}" data-on="${host.on(() => push('muscle', { id: g.id }))}">
+        <div class="lx-badge">${ic('dumbbell')}</div>
+        <div class="col g4" style="flex:1"><div class="row" style="gap:8px"><span class="headline">${esc(g.id)}</span><span class="tag">${esc(g.nick)}</span></div>
+          <div class="sub muted">${esc(g.tag)}</div><div class="caption muted">${g.muskeln.length} Muskeln erklärt</div></div>
+        <span class="muted">${ic('chevR')}</span></div>`).join('')}</div></div>
+      <div data-lx-group><div class="group-title"><span>Kurz erklärt</span></div><div class="group">
+        ${li('chartUp', 'So wächst ein Muskel', () => push('lexInfo', { kind: 'grow' }))}
+        ${li('hash', 'Begriffe von A bis Z', () => push('lexInfo', { kind: 'terms' }))}
+        ${li('info', 'Mythen-Check', () => push('lexInfo', { kind: 'myths' }))}
+      </div></div>`;
   } else {
     const cats = [...new Set(L.articles.map(a => a.cat))];
     list = cats.map(c => `<div data-lx-group><div class="group-title"><span>${esc(c)}</span></div><div class="col" style="gap:10px">
@@ -1807,9 +1820,10 @@ SCREENS.lexikon = (entry, host) => {
     body: `
       <div class="segmented">
         <button class="${st.tab === 'ex' ? 'on' : ''}" data-on="${host.on(() => { st.tab = 'ex'; refresh(); })}">Übungen</button>
+        <button class="${st.tab === 'muskeln' ? 'on' : ''}" data-on="${host.on(() => { st.tab = 'muskeln'; refresh(); })}">Muskeln</button>
         <button class="${st.tab === 'wissen' ? 'on' : ''}" data-on="${host.on(() => { st.tab = 'wissen'; refresh(); })}">Wissen</button>
       </div>
-      <label class="search">${ic('search')}<input placeholder="${st.tab === 'ex' ? 'Übung oder Muskel suchen' : 'Thema suchen'}" value="${esc(st.q)}" autocomplete="off" data-in="${host.on(filter)}"></label>
+      <label class="search">${ic('search')}<input placeholder="${st.tab === 'ex' ? 'Übung oder Muskel suchen' : st.tab === 'muskeln' ? 'Muskel suchen, z. B. Latissimus' : 'Thema suchen'}" value="${esc(st.q)}" autocomplete="off" data-in="${host.on(filter)}"></label>
       <div class="list-wrap" style="gap:22px">${list}</div>
       <div class="caption muted center">Allgemeine Trainingsinfos – kein Ersatz für Trainer oder Arzt.</div>`,
     after(el) { const i = el.querySelector('.search input'); if (st.q && i) filter(i); }
@@ -1839,6 +1853,8 @@ SCREENS.lexEntry = (entry, host) => {
         ${listHTML('Tipps', 'check', 'green', d.tips)}
         ${listHTML('Häufige Fehler', 'x', 'red', d.mistakes)}`
       : emptyState('book', 'Keine Anleitung', 'Für eigene Übungen gibt es noch keine Beschreibung im Lexikon.')}
+      ${typeof MUSKEL_LEX !== 'undefined' && MUSKEL_LEX.some(g => g.id === ex.muscle) ? `<div class="card r16 row tap" data-on="${host.on(() => push('muscle', { id: ex.muscle }))}">
+          <div class="lx-badge">${ic('book')}</div><div class="col g4" style="flex:1"><span class="headline">Muskelgruppe ${esc(ex.muscle)}</span><span class="sub muted">Was die Muskeln machen, Gegenspieler, Mythen & Tipps</span></div><span class="muted">${ic('chevR')}</span></div>` : ''}
       ${hasHistory ? `<button class="btn-tinted" data-on="${host.on(() => push('exerciseProgress', { name }))}">${ic('chartUp')}<span>Mein Verlauf & Bestleistung</span></button>` : ''}`
   };
 };
