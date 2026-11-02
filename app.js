@@ -139,7 +139,8 @@ const ICONS = {
   share: '<path d="M12 3.5v11M8 7.5l4-4 4 4M7 10.5H5.5v10h13v-10H17"/>',
   x: '<path d="M6 6l12 12M18 6 6 18"/>',
   runCircle: '<circle cx="12" cy="12" r="10"/><circle cx="13.6" cy="6.8" r="1.4"/><path d="M8.5 18l2.2-4.3 2.3 1.9V19M7.3 11.5l2.1-2.4 3.1.8 1.6 2.3 2.2.4M10.7 13.7l1.6-3.6"/>',
-  info: '<circle cx="12" cy="12" r="9.5"/><path d="M12 11v5.5M12 7.5v.5"/>'
+  info: '<circle cx="12" cy="12" r="9.5"/><path d="M12 11v5.5M12 7.5v.5"/>',
+  book: '<path d="M12 6.5C10 5 7 4.5 3.5 5v14c3.5-.5 6.5 0 8.5 1.5 2-1.5 5-2 8.5-1.5V5c-3.5-.5-6.5 0-8.5 1.5zM12 6.5v14"/>'
 };
 const ic = (name, extra = '') =>
   `<svg class="i ${extra}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ICONS[name] || ''}</svg>`;
@@ -947,7 +948,11 @@ SCREENS.home = (entry, host) => {
         <div class="card r18 col g8"><span class="caption muted">Diese Woche</span><span class="h1" style="font-size:28px">${thisWeek.length}</span><span class="caption muted">${thisWeek.length === 1 ? 'Training' : 'Trainings'}</span></div>
         <div class="card r18 col g8"><span class="caption muted">Gesamtzeit</span><span class="h1" style="font-size:28px">${durText}</span>${miniBars(daily, 28)}</div>
       </div>
-      <div class="card r18 center sub italic">${esc(quote)}</div>`
+      <div class="card r18 center sub italic">${esc(quote)}</div>
+      ${(() => { const arts = LEX().articles; if (!arts.length) return ''; const a = arts[dayOfYear % arts.length];
+        return `<div class="card r18 col g8 tap" data-on="${host.on(() => push('lexArticle', { id: a.id }))}">
+          <div class="row"><span class="accent" style="display:flex">${ic('book')}</span><span class="caption bold accent" style="text-transform:uppercase;letter-spacing:.4px;flex:1">Wissen für heute</span><span class="muted">${ic('chevR')}</span></div>
+          <div class="headline">${esc(a.title)}</div><div class="sub muted">${esc(a.teaser)}</div></div>`; })()}`
   };
 };
 
@@ -1210,6 +1215,7 @@ SCREENS.exercise = (entry, host) => {
 
   return {
     title: '',
+    right: lexEntryBtn(host, ex.name),
     onBack: () => guardBack(st.currentSets.length,
       () => { commitSets(ex.name, 'normal', st.currentSets, entry.params.inSession); st.currentSets = []; },
       () => { st.currentSets = []; Drafts.clear(ex.name); }),
@@ -1264,6 +1270,7 @@ SCREENS.pullups = (entry, host) => {
   };
   return {
     title: '',
+    right: lexEntryBtn(host, 'Klimmzüge'),
     onBack: () => guardBack(st.sets.length,
       () => { commitSets('Klimmzüge', 'pullups', st.sets, entry.params.inSession); st.sets = []; },
       () => { st.sets = []; Drafts.clear('Klimmzüge'); }),
@@ -1310,6 +1317,7 @@ SCREENS.deadhang = (entry, host) => {
   };
   return {
     title: '',
+    right: lexEntryBtn(host, 'Dead Hang'),
     onBack: () => guardBack(st.sets.length,
       () => { commitSets('Dead Hang', 'deadhang', st.sets, entry.params.inSession); st.sets = []; },
       () => { st.sets = []; Drafts.clear('Dead Hang'); }),
@@ -1362,6 +1370,7 @@ SCREENS.planks = (entry, host) => {
   };
   return {
     title: '',
+    right: lexEntryBtn(host, 'Planks'),
     onBack: () => guardBack(st.sets.length,
       () => { commitSets('Planks', 'planks', st.sets, entry.params.inSession); st.sets = []; },
       () => { st.sets = []; Drafts.clear('Planks'); }),
@@ -1755,6 +1764,104 @@ function openAddRunSheet(onSaved) {
   });
 }
 
+
+/* ---------- Lexikon ---------- */
+const LEX = () => window.LEXIKON || { exercises: {}, articles: [] };
+const lexEntryBtn = (host, name) => (LEX().exercises[name]
+  ? `<button class="nb-btn" data-on="${host.on(() => push('lexEntry', { name }))}">${ic('book')}<span>Anleitung</span></button>` : '');
+
+SCREENS.lexikon = (entry, host) => {
+  const st = entry.state;
+  if (!st.tab) { st.tab = entry.params.tab || 'ex'; st.q = ''; }
+  const L = LEX();
+  const filter = el => {
+    st.q = el.value; const term = st.q.trim().toLowerCase();
+    screenEl().querySelectorAll('[data-lx-group]').forEach(g => {
+      let any = false;
+      g.querySelectorAll('[data-lx]').forEach(r => { const hit = !term || r.dataset.lx.includes(term); r.style.display = hit ? '' : 'none'; any = any || hit; });
+      g.style.display = any ? '' : 'none';
+    });
+  };
+  let list;
+  if (st.tab === 'ex') {
+    const all = Pool.all();
+    list = MUSCLES.map(m => {
+      const items = all.filter(e => e.muscle === m).sort((a, b) => (a.name < b.name ? -1 : 1));
+      return `<div data-lx-group><div class="group-title"><span>${m}</span></div><div class="group">
+        ${items.map(e => { const d = L.exercises[e.name];
+          return `<button class="li" style="padding-top:8px;padding-bottom:8px" data-lx="${esc((e.name + ' ' + (d ? d.primary + ' ' + d.secondary : '')).toLowerCase())}" data-on="${host.on(() => push('lexEntry', { name: e.name }))}">
+            ${exImage(e, 36)}<div class="col" style="gap:2px;flex:1;text-align:left"><span>${esc(e.name)}</span><span class="caption muted">${esc(d ? d.primary : 'Eigene Übung')}</span></div><span class="chev">${ic('chevR')}</span></button>`; }).join('')}
+      </div></div>`;
+    }).join('');
+  } else {
+    const cats = [...new Set(L.articles.map(a => a.cat))];
+    list = cats.map(c => `<div data-lx-group><div class="group-title"><span>${esc(c)}</span></div><div class="col" style="gap:10px">
+      ${L.articles.filter(a => a.cat === c).map(a => `<div class="card r16 row tap" data-lx="${esc((a.title + ' ' + a.teaser).toLowerCase())}" data-on="${host.on(() => push('lexArticle', { id: a.id }))}">
+          <span class="accent" style="font-size:24px;display:flex">${ic(a.icon)}</span>
+          <div class="col g4" style="flex:1"><span class="headline">${esc(a.title)}</span><span class="sub muted">${esc(a.teaser)}</span></div>
+          <span class="muted">${ic('chevR')}</span></div>`).join('')}
+    </div></div>`).join('');
+  }
+  return {
+    title: 'Lexikon', large: true,
+    body: `
+      <div class="segmented">
+        <button class="${st.tab === 'ex' ? 'on' : ''}" data-on="${host.on(() => { st.tab = 'ex'; refresh(); })}">Übungen</button>
+        <button class="${st.tab === 'wissen' ? 'on' : ''}" data-on="${host.on(() => { st.tab = 'wissen'; refresh(); })}">Wissen</button>
+      </div>
+      <label class="search">${ic('search')}<input placeholder="${st.tab === 'ex' ? 'Übung oder Muskel suchen' : 'Thema suchen'}" value="${esc(st.q)}" autocomplete="off" data-in="${host.on(filter)}"></label>
+      <div class="list-wrap" style="gap:22px">${list}</div>
+      <div class="caption muted center">Allgemeine Trainingsinfos – kein Ersatz für Trainer oder Arzt.</div>`,
+    after(el) { const i = el.querySelector('.search input'); if (st.q && i) filter(i); }
+  };
+};
+
+SCREENS.lexEntry = (entry, host) => {
+  const name = entry.params.name;
+  const ex = Pool.find(name) || { name, muscle: '', imageName: '' };
+  const d = LEX().exercises[name];
+  const hasHistory = store.has('history_' + name) && Data.history(name).length;
+  const listHTML = (title, icon, cls, items) => `<div class="card r18 col g12"><div class="row"><span class="${cls}" style="display:flex;font-size:20px">${ic(icon)}</span><span class="headline">${title}</span></div>
+      ${items.map(t => `<div class="row top sub" style="gap:10px"><span class="${cls}" style="margin-top:1px">•</span><span style="flex:1;line-height:1.4">${esc(t)}</span></div>`).join('')}</div>`;
+  return {
+    title: name,
+    body: `
+      <div style="display:flex;justify-content:center">${exImage(ex, 130)}</div>
+      <div class="col g4"><div class="h1" style="font-size:28px">${esc(name)}</div><div class="muted">${esc(ex.muscle)}</div></div>
+      ${d ? `
+        <div class="card r18 col g8">
+          <div class="row top"><span class="caption muted" style="width:92px">Hauptmuskel</span><span class="sub semibold" style="flex:1">${esc(d.primary)}</span></div>
+          ${d.secondary && d.secondary !== '–' ? `<div class="row top"><span class="caption muted" style="width:92px">Unterstützt</span><span class="sub" style="flex:1">${esc(d.secondary)}</span></div>` : ''}
+        </div>
+        <div class="col g12"><div class="h2">Ausführung</div>
+          ${d.steps.map((t, i) => `<div class="row top" style="gap:12px"><span class="step-num">${i + 1}</span><span class="sub" style="flex:1;line-height:1.45;padding-top:3px">${esc(t)}</span></div>`).join('')}
+        </div>
+        ${listHTML('Tipps', 'check', 'green', d.tips)}
+        ${listHTML('Häufige Fehler', 'x', 'red', d.mistakes)}`
+      : emptyState('book', 'Keine Anleitung', 'Für eigene Übungen gibt es noch keine Beschreibung im Lexikon.')}
+      ${hasHistory ? `<button class="btn-tinted" data-on="${host.on(() => push('exerciseProgress', { name }))}">${ic('chartUp')}<span>Mein Verlauf & Bestleistung</span></button>` : ''}`
+  };
+};
+
+SCREENS.lexArticle = (entry, host) => {
+  const a = LEX().articles.find(x => x.id === entry.params.id);
+  if (!a) return { title: 'Lexikon', body: '<div class="muted">Artikel nicht gefunden.</div>' };
+  const others = LEX().articles.filter(x => x.cat === a.cat && x.id !== a.id);
+  return {
+    title: a.title,
+    body: `
+      <div class="col g8"><span class="caption bold accent" style="text-transform:uppercase;letter-spacing:.4px">${esc(a.cat)}</span>
+        <div class="h1" style="font-size:30px">${esc(a.title)}</div><div class="muted">${esc(a.teaser)}</div></div>
+      ${a.sections.map(sec => `<div class="col g8 article">
+          ${sec.h ? `<div class="h3">${esc(sec.h)}</div>` : ''}
+          ${(sec.p || []).map(t => `<p>${esc(t)}</p>`).join('')}
+          ${sec.list ? `<div class="col g8">${sec.list.map(t => `<div class="row top" style="gap:10px"><span class="accent">•</span><span style="flex:1">${esc(t)}</span></div>`).join('')}</div>` : ''}
+        </div>`).join('')}
+      ${others.length ? `<div class="col g12" style="margin-top:8px"><div class="group-title" style="padding:0">Mehr zu ${esc(a.cat)}</div>
+        ${others.map(o => `<div class="card r16 row tap" data-on="${host.on(() => push('lexArticle', { id: o.id }))}"><span class="accent" style="font-size:22px;display:flex">${ic(o.icon)}</span><span class="headline" style="flex:1">${esc(o.title)}</span><span class="muted">${ic('chevR')}</span></div>`).join('')}</div>` : ''}`
+  };
+};
+
 /* ---------- Mehr ---------- */
 SCREENS.more = (entry, host) => {
   const li = (icon, title, fn) => `<button class="li ind" data-on="${host.on(fn)}"><span class="ic">${ic(icon)}</span><span style="flex:1">${title}</span><span class="chev">${ic('chevR')}</span></button>`;
@@ -1762,9 +1869,9 @@ SCREENS.more = (entry, host) => {
     title: 'Mehr', large: true,
     body: `<div class="list-wrap">
       <div><div class="group-title">Training</div><div class="group">
+        ${li('book', 'Lexikon', () => push('lexikon'))}
         ${li('clipboard', 'Trainingspläne', () => push('plans'))}
         ${li('checklist', 'Übungs-Katalog', () => push('catalog'))}
-        ${li('book', 'Muskel-Lexikon', () => push('lexicon'))}
         ${li('run', 'Lauf-Stats', () => push('runs'))}
       </div></div>
       <div><div class="group-title">App</div><div class="group">

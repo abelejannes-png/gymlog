@@ -1,319 +1,531 @@
-/* =========================================================================
-   Muskel-Lexikon – verständlich erklärt, passend zu den Muskelgruppen der App.
-   Wird nach app.js geladen und hängt sich über SCREENS in die Navigation ein.
-   ========================================================================= */
+/* GymLog Lexikon – Übungsanleitungen und Trainingswissen.
+ * Allgemeine Informationen, kein Ersatz für Trainer oder Arzt. */
+'use strict';
 
-ICONS.book = '<path d="M12 6.5C10.5 5 8 4.5 4.5 4.5v13c3.5 0 6 .5 7.5 2 1.5-1.5 4-2 7.5-2v-13c-3.5 0-6 .5-7.5 2zM12 6.5v13"/>';
+(function () {
+  const E = (primary, secondary, steps, tips, mistakes) => ({ primary, secondary, steps, tips, mistakes });
 
-const LEX = [
-  {
-    id: 'Brust', nick: 'Pecs', tag: 'Drücken, Stoßen, Umarmen.',
-    kurz: `Dein großer Brustmuskel ist ein Fächer, der vom Brustbein und Schlüsselbein zum Oberarm läuft. Er bringt den Arm nach vorn und zur Körpermitte – alles, was du wegdrückst, läuft über ihn.`,
-    muskeln: [
-      ['Großer Brustmuskel', 'Pectoralis major', `Der Chef der Brust. Die oberen Fasern (vom Schlüsselbein) arbeiten beim Schrägbankdrücken stärker, die mittleren beim Flachbankdrücken, die unteren bei Dips und Negativbankdrücken. Zusammen: Arm vor den Körper führen, drücken, zur Mitte ziehen.`],
-      ['Kleiner Brustmuskel', 'Pectoralis minor', `Liegt unter dem großen und hält das Schulterblatt vorn unten. Ist er verkürzt (viel Schreibtisch, viel Handy), hängen die Schultern nach vorn.`],
-      ['Vorderer Sägemuskel', 'Serratus anterior', `Der Muskel mit den „Zacken“ seitlich an den Rippen. Er schiebt die Schulterblätter nach vorn und hält sie am Brustkorb – wichtig für gesunde Schultern beim Drücken. Bei Liegestützen oben die Schulterblätter bewusst auseinanderschieben.`]
-    ],
-    gegen: `Rücken (Latissimus, Rhomboiden). Wer nur drückt, zieht die Schultern nach vorn – zieh etwa so viel, wie du drückst.`,
-    alltag: `Türen aufdrücken, dich vom Boden hochstemmen, etwas wegschieben, werfen, jemanden umarmen.`,
-    fun: [
-      `Beim Bankdrücken arbeitet die Brust nie allein: vordere Schulter und Trizeps helfen immer mit. Brust + Schulter vorn + Trizeps = das klassische „Push“-Team.`,
-      `Der Brustmuskel hat zwei Ursprünge (Schlüsselbein und Brustbein/Rippen). Deshalb verschiebt der Bankwinkel, welcher Teil mehr Arbeit abbekommt.`,
-      `Bei Fliegenden wird die Brust unten am stärksten gedehnt. Training in der gedehnten Position gilt als besonders gut fürs Wachstum.`
-    ],
-    fehler: [
-      `Schultern nach vorn rollen – Schulterblätter zusammen und nach unten ziehen, Brust raus.`,
-      `Die Stange von der Brust abprallen lassen – kontrolliert absenken, kurz die Spannung halten.`,
-      `Ellbogen im 90°-Winkel weit abspreizen – etwa 45–70° zum Körper sind schulterfreundlicher.`
-    ],
-    tipp: `Leg Fliegende (Pec Fly, Cable Crossover) ans Ende: Nach den schweren Drückübungen hat die Brust noch Power, die Schulter wird aber geschont.`
-  },
-  {
-    id: 'Schulter', nick: 'Delts', tag: 'Breite, die man von vorn und hinten sieht.',
-    kurz: `Der Deltamuskel besteht aus drei Köpfen, die wie eine Kappe um das Schultergelenk liegen. Er hebt den Arm in jede Richtung – und macht dich optisch breiter.`,
-    muskeln: [
-      ['Vorderer Delta', 'Deltoideus, Pars clavicularis', `Hebt den Arm nach vorn. Arbeitet bei jedem Drücken kräftig mit (Bankdrücken, Überkopfdrücken) – bei den meisten ist er deshalb schon gut im Training.`],
-      ['Seitlicher Delta', 'Deltoideus, Pars acromialis', `Hebt den Arm zur Seite. Der „Breitmacher“: Seitheben ist die Übung, die dich in der Frontansicht breiter wirken lässt.`],
-      ['Hinterer Delta', 'Deltoideus, Pars spinalis', `Zieht den Arm nach hinten und außen. Wird gern vergessen, hält aber die Schultern aufrecht. Face Pulls und Reverse Butterfly treffen ihn.`],
-      ['Rotatorenmanschette', 'Supraspinatus, Infraspinatus, Teres minor, Subscapularis', `Vier kleine Muskeln, die den Oberarmkopf wie ein Gummiband in der Gelenkpfanne halten. Das Schultergelenk ist das beweglichste des Körpers – und braucht deshalb diese Stabilisatoren. Face Pulls und leichte Außenrotation halten sie fit.`]
-    ],
-    gegen: `Vorderer ↔ hinterer Delta. Die meisten drücken viel und ziehen zu wenig nach hinten – Face Pulls und Reverse Butterfly gleichen das aus.`,
-    alltag: `Etwas ins Regal heben, den Koffer in die Gepäckablage, Arme zur Seite strecken, Rucksack tragen.`,
-    fun: [
-      `Schulterbreite kommt vor allem vom seitlichen Delta – und der bekommt beim Drücken kaum Arbeit. Deshalb gibt es extra Seitheben.`,
-      `Das Schultergelenk hat den größten Bewegungsspielraum aller Gelenke – dafür kugelt es sich auch am häufigsten aus.`,
-      `Seitheben geht mit leichten Gewichten: Gefühl und Kontrolle bringen hier mehr als Kilos.`
-    ],
-    fehler: [
-      `Beim Seitheben schwingen und mit dem Trapez hochziehen – Schultern unten lassen, die Ellbogen führen.`,
-      `Aufrechtes Rudern mit Ellbogen weit über Schulterhöhe – wenn es im Gelenk zwickt, Griff breiter oder Übung wechseln.`,
-      `Überkopfdrücken im Hohlkreuz – Bauch und Po anspannen, Rippen nach unten.`
-    ],
-    tipp: `Seitheben gern an den Anfang der Einheit und mit höheren Wiederholungen (12–20) – vor allem, wenn der seitliche Delta bei dir zurückbleibt.`
-  },
-  {
-    id: 'Trizeps', nick: 'Der Streckmuskel', tag: 'Der größte Teil deines Oberarms.',
-    kurz: `Der Trizeps liegt an der Rückseite des Oberarms und streckt den Ellbogen. Er macht den größten Teil deiner Oberarmmasse aus – wer dicke Arme will, trainiert vor allem ihn, nicht den Bizeps.`,
-    muskeln: [
-      ['Langer Kopf', 'Caput longum', `Entspringt am Schulterblatt und läuft damit über zwei Gelenke. Bei Überkopf-Varianten (Overhead Push, French Press) wird er am stärksten gedehnt – und das mag er fürs Wachstum.`],
-      ['Seitlicher Kopf', 'Caput laterale', `Der sichtbare „Hufeisen“-Teil außen am Arm. Springt bei schwerem Drücken an: Enges Bankdrücken, Dips, Pushdowns.`],
-      ['Mittlerer Kopf', 'Caput mediale', `Liegt tief unter den anderen und hilft immer mit, sobald der Ellbogen streckt – auch bei leichten Lasten.`]
-    ],
-    gegen: `Bizeps. Am Ellbogen arbeiten die beiden gegeneinander: Bizeps beugt, Trizeps streckt.`,
-    alltag: `Alles, was du wegdrückst oder abstützt: aus dem Sitzen hochdrücken, Tür aufstoßen, etwas über den Kopf heben.`,
-    fun: [
-      `„Tri-ceps“ heißt dreiköpfig, „Bi-ceps“ zweiköpfig – der Name sagt schon, wie viele Köpfe sie haben.`,
-      `Beim Bankdrücken scheitert oft der Trizeps, nicht die Brust. Ein starker Trizeps bringt mehr Gewicht auf die Stange.`,
-      `Für den langen Kopf sind Überkopf-Übungen besonders gut, weil er dort in die Dehnung kommt.`
-    ],
-    fehler: [
-      `Beim Pushdown die Ellbogen nach vorn und hinten wandern lassen – Ellbogen eng am Körper festnageln.`,
-      `Mit Schwung und dem Oberkörper drücken – Gewicht runter, Bewegung sauber.`,
-      `Ellbogen bei French Press weit nach außen – möglichst parallel halten, das schont die Gelenke.`
-    ],
-    tipp: `Kombiniere eine Überkopf-Übung (Overhead Push) mit einer Pushdown-Variante – dann kommen alle drei Köpfe gut dran.`
-  },
-  {
-    id: 'Bizeps', nick: 'Der Poser-Muskel', tag: 'Beugen und Drehen.',
-    kurz: `Der Bizeps beugt den Ellbogen und dreht die Handfläche nach oben (Supination). Er ist der Muskel, den jeder zeigt – aber nur ein Teil der Armvorderseite.`,
-    muskeln: [
-      ['Zweiköpfiger Armmuskel', 'Biceps brachii', `Langer Kopf (außen) und kurzer Kopf (innen). Beugt den Ellbogen, dreht den Unterarm nach außen (wie ein Korkenzieher) und hilft ein bisschen beim Heben des Arms nach vorn.`],
-      ['Oberarmmuskel', 'Brachialis', `Liegt unter dem Bizeps und ist der eigentliche Arbeits-Beuger im Ellbogen. Wächst er, schiebt er den Bizeps nach oben – der Arm wirkt dicker. Hammer Curls treffen ihn besonders.`],
-      ['Oberarmspeichenmuskel', 'Brachioradialis', `Sitzt am Unterarm neben dem Ellbogen und hilft beim Beugen, vor allem mit neutralem Griff oder Obergriff (Hammer Curls, Reverse Curls).`]
-    ],
-    gegen: `Trizeps. Bizeps beugt, Trizeps streckt – für ausgewogene Arme beide trainieren.`,
-    alltag: `Tasche tragen, Kiste hochheben, Klimmzug, Schraubverschluss aufdrehen.`,
-    fun: [
-      `Beim Klimmzug im Untergriff arbeitet der Bizeps richtig mit – deshalb bekommt er auch von Rückenübungen etwas ab.`,
-      `Der Bizeps kann den Unterarm drehen. Kurzhantel-Curls mit Drehung sind deshalb ein anderer Reiz als Langhantel-Curls.`,
-      `Er läuft über zwei Gelenke (Schulter und Ellbogen) – bei Schräghantelbank-Curls wird er dadurch besonders stark gedehnt.`
-    ],
-    fehler: [
-      `Mit dem Rücken schwingen (Cheat Curls) – Rücken stabil, Ellbogen vorn fixieren.`,
-      `Nur halbe Bewegung – unten ganz strecken, oben ganz beugen.`,
-      `Gewicht zu schwer: Wenn der Rücken mithilft, ist es zu viel.`
-    ],
-    tipp: `Lass das Gewicht langsam runter (2–3 Sekunden). Und vergiss den Brachialis nicht: Hammer Curls machen den Arm dicker.`
-  },
-  {
-    id: 'Rücken', nick: 'Das Fundament', tag: 'Breit von vorn, stabil von hinten.',
-    kurz: `Der Rücken ist die größte Muskelgruppe deines Oberkörpers und besteht aus mehreren Schichten. Er zieht, hält dich aufrecht und überträgt Kraft zwischen Beinen und Armen.`,
-    muskeln: [
-      ['Breiter Rückenmuskel', 'Latissimus dorsi', `Der große Flügel seitlich am Rücken. Zieht den Arm von oben nach unten und hinten (Latzug, Klimmzug) und macht die V-Form: breit oben, schmal in der Taille.`],
-      ['Kapuzenmuskel', 'Trapezius', `Die Raute vom Nacken bis zur Mitte des Rückens. Der obere Teil hebt die Schultern (Shrugs), der mittlere zieht die Schulterblätter zusammen, der untere nach unten.`],
-      ['Rautenmuskeln', 'Rhomboideen', `Liegen zwischen den Schulterblättern und ziehen sie zusammen. Wichtig fürs Rudern und gegen einen Rundrücken.`],
-      ['Rückenstrecker', 'Erector spinae', `Zwei Muskelstränge links und rechts der Wirbelsäule. Sie richten dich auf und halten den Rücken bei Kreuzheben und Kniebeugen stabil. Der „untere Rückenstrecker“ in deinem Katalog trainiert genau sie.`],
-      ['Großer Rundmuskel', 'Teres major', `Der „kleine Bruder“ des Latissimus – er unterstützt ihn beim Ziehen.`]
-    ],
-    gegen: `Brust (und vorderer Delta). Lieber etwas mehr ziehen als drücken – das hält die Schultern gesund.`,
-    alltag: `Etwas zu dir ziehen, Rucksack tragen, Gepäck heben, aufrecht sitzen, aus gebückter Haltung aufstehen.`,
-    fun: [
-      `Der Latissimus ist flächenmäßig der größte Muskel des Oberkörpers.`,
-      `Beim Ziehen: Denk „Ellbogen zu den Hosentaschen“. Wer die Ellbogen führt statt der Hände, spürt den Lat besser.`,
-      `Kreuzheben trainiert fast die ganze Rückseite des Körpers: Rücken, Po, Beinbeuger und Unterarme.`
-    ],
-    fehler: [
-      `Mit den Armen statt mit dem Rücken ziehen – erst die Schulterblätter bewegen, dann folgen die Arme.`,
-      `Beim Kreuzheben mit rundem Rücken heben – neutraler Rücken, Stange nah am Körper.`,
-      `Zu viel Schwung beim Rudern – Oberkörper ruhig halten oder Chest Supported Rudern nutzen.`
-    ],
-    tipp: `Wechsle zwischen Vertikal (Latzug, Klimmzug) und Horizontal (Rudern). Das eine macht den Rücken breit, das andere dick.`
-  },
-  {
-    id: 'Beine', nick: 'Die Motoren', tag: 'Die größten Muskeln deines Körpers.',
-    kurz: `Beine und Po sind die größte Muskelmasse im Körper. Sie tragen dich, treiben dich an und sind die Basis für Kraft in fast jeder Sportart.`,
-    muskeln: [
-      ['Vierköpfiger Oberschenkelmuskel', 'Quadrizeps', `Die Vorderseite des Oberschenkels, vier Köpfe, streckt das Knie. Kniebeugen, Beinpresse, Beinstrecker, Ausfallschritte.`],
-      ['Beinbeuger', 'Hamstrings: Biceps femoris, Semitendinosus, Semimembranosus', `Die Rückseite des Oberschenkels: beugen das Knie und strecken die Hüfte. Rumänisches Kreuzheben (viel Dehnung!) und Beinbeuger-Maschine sind die besten Übungen.`],
-      ['Großer Gesäßmuskel', 'Gluteus maximus', `Der größte Muskel des Körpers. Streckt die Hüfte: aufstehen, Treppen steigen, sprinten, Hüftstoßen.`],
-      ['Mittlerer und kleiner Gesäßmuskel', 'Gluteus medius / minimus', `Sitzen seitlich am Becken. Führen das Bein zur Seite und halten das Becken stabil beim Gehen und Laufen (Abduktoren-Maschine).`],
-      ['Adduktoren', 'Adduktorengruppe', `Die Innenseite des Oberschenkels. Ziehen die Beine zusammen und stabilisieren Becken und Knie – bei tiefen Kniebeugen stark beteiligt.`],
-      ['Wadenmuskeln', 'Gastrocnemius & Soleus', `Der zweiköpfige Wadenmuskel (Gastrocnemius) arbeitet vor allem bei gestrecktem Knie – stehendes Wadenheben. Der Schollenmuskel (Soleus) darunter wird bei gebeugtem Knie wichtiger – sitzendes Wadenheben. Deshalb beides trainieren.`]
-    ],
-    gegen: `Quadrizeps ↔ Beinbeuger. Starke Beinbeuger stabilisieren das Knie – nicht nur Beinstrecker machen.`,
-    alltag: `Treppen, aufstehen, rennen, hinsetzen, Einkauf tragen, Radfahren – ohne starke Beine geht nichts.`,
-    fun: [
-      `Der Gluteus maximus ist nach Masse der größte Muskel des Körpers.`,
-      `Beintraining ist hart, weil so viel Muskelmasse gleichzeitig arbeitet – Puls und Atmung gehen hoch. Plane ruhig längere Pausen ein.`,
-      `Muskelkater erreicht oft erst nach 24–72 Stunden seinen Höhepunkt – bei den Beinen besonders gemein.`
-    ],
-    fehler: [
-      `Knie fallen bei Kniebeugen nach innen – Knie aktiv in Richtung der Zehen schieben.`,
-      `Zu flach beugen – wenn deine Mobilität es erlaubt, mindestens bis die Oberschenkel parallel zum Boden sind.`,
-      `Beinbeuger und Waden vergessen – beide gehören zum festen Programm.`
-    ],
-    tipp: `Beginne mit der schwersten Übung (Kniebeuge oder Beinpresse), dann Beinbeuger, zum Schluss Waden – unten mit voller Dehnung.`
-  },
-  {
-    id: 'Unterarme', nick: 'Die Greifer', tag: 'Griffkraft entscheidet, was du halten kannst.',
-    kurz: `Am Unterarm sitzen viele kleine Muskeln für Handgelenk und Finger. Sie halten die Stange fest, wenn die großen Muskeln eigentlich noch könnten.`,
-    muskeln: [
-      ['Handgelenk- und Fingerbeuger', 'Flexoren', `Auf der Innenseite. Schließen die Hand und beugen das Handgelenk – das ist deine Griffkraft. Wrist Curls, Farmer's Walk, Dead Hang.`],
-      ['Handgelenk- und Fingerstrecker', 'Extensoren', `Auf der Außenseite. Strecken das Handgelenk und halten die Beuger im Gleichgewicht. Sind sie zu schwach, kann es am Ellbogen ziehen („Tennisarm“). Wrist Extensions.`],
-      ['Oberarmspeichenmuskel', 'Brachioradialis', `Der dicke Muskel am oberen Unterarm Richtung Ellbogen. Hammer Curls und Reverse Curls treffen ihn.`],
-      ['Dreher des Unterarms', 'Pronatoren und Supinatoren', `Drehen die Handfläche nach unten bzw. oben – wichtig bei Curls und Klimmzügen.`]
-    ],
-    gegen: `Beuger ↔ Strecker. Wer viel greift und zieht, sollte ab und zu die Strecker mittrainieren.`,
-    alltag: `Einkaufstüten tragen, Gläser aufdrehen, Werkzeug halten, Händeschütteln, Klettern.`,
-    fun: [
-      `Beim Kreuzheben und beim Klimmzug gibt oft zuerst der Griff auf, nicht der Rücken. Dead Hang trainiert genau das.`,
-      `Unterarme arbeiten schon im Alltag den ganzen Tag. Viele trainieren sie deshalb mit höheren Wiederholungen (12–20 oder mehr).`,
-      `Beim Farmer's Walk nimmst du einfach schwere Hanteln und gehst – das trainiert Griff, Trapez und Rumpf gleichzeitig.`
-    ],
-    fehler: [
-      `Beim Wrist Curl aus dem Ellbogen schwingen – Unterarm auflegen, nur das Handgelenk bewegen.`,
-      `Immer mit Zughilfen (Straps) trainieren – dann bleibt der Griff schwach. Straps nur für die schwersten Sätze.`,
-      `Die Streckerseite vergessen.`
-    ],
-    tipp: `Dead Hang am Ende des Trainings: Zeit stoppen und von Woche zu Woche ein paar Sekunden länger hängen. GymLog speichert deine Zeiten.`
-  },
-  {
-    id: 'Abs', nick: 'Der Rumpf', tag: 'Sixpack ist nur die Spitze.',
-    kurz: `Dein Bauch ist ein Korsett aus mehreren Schichten. Er beugt und dreht den Oberkörper und hält ihn – noch wichtiger – stabil, damit Kraft sauber übertragen wird.`,
-    muskeln: [
-      ['Gerader Bauchmuskel', 'Rectus abdominis', `Der „Sixpack“-Muskel. Beugt den Rumpf (Crunch, Sit-up) und zieht Brustkorb und Becken zusammen. Die Blöcke entstehen durch Sehnenstreifen – wie viele du sichtbar hast, ist Veranlagung.`],
-      ['Schräge Bauchmuskeln', 'Obliquus externus / internus', `An den Seiten: drehen und neigen den Oberkörper und stabilisieren gegen Verdrehen (Russian Twists, Seitliche Planks).`],
-      ['Querer Bauchmuskel', 'Transversus abdominis', `Die tiefste Schicht, wie ein Gürtel um den Bauch. Er erhöht den Druck im Bauchraum und stabilisiert die Wirbelsäule – bei schweren Kniebeugen und Kreuzheben „Bauch fest“.`],
-      ['Hüftbeuger', 'Iliopsoas', `Gehört streng genommen nicht zum Bauch, hilft aber bei Beinheben und Sit-ups. Wer beim Leg Raise ins Hohlkreuz kippt, zieht zu stark an den Hüftbeugern.`]
-    ],
-    gegen: `Rückenstrecker. Bauch und unterer Rücken stabilisieren gemeinsam die Wirbelsäule.`,
-    alltag: `Aufstehen aus dem Bett, Husten, Lachen, Gleichgewicht halten, schwere Dinge tragen – überall, wo dein Rumpf stabil bleiben muss.`,
-    fun: [
-      `Ob du den Sixpack siehst, hängt vor allem vom Körperfettanteil ab. Trainiert sind die Bauchmuskeln oft längst, nur noch versteckt.`,
-      `Gezielt am Bauch Fett verbrennen (Spot Reduction) funktioniert nicht. Crunches bauen den Muskel auf, nehmen aber kein Bauchfett weg.`,
-      `Planks sind isometrisch: Der Muskel arbeitet, ohne sich zu bewegen. GymLog misst deine Plank-Zeit.`
-    ],
-    fehler: [
-      `Beim Crunch mit dem Nacken ziehen – Hände locker, Blick zur Decke, Rippen zum Becken bringen.`,
-      `Beim Plank ins Hohlkreuz fallen – Po leicht anspannen, Bauch fest.`,
-      `Jeden Tag Bauch trainieren – Bauchmuskeln brauchen auch Pausen, 2–4× pro Woche reicht.`
-    ],
-    tipp: `Kombiniere eine Beugeübung (Cable Crunches), eine Stabi-Übung (Planks oder Ab Wheel) und eine Seiten-/Dreh-Übung (Seitliche Planks).`
-  }
-];
+  const exercises = {
+    /* ---------------- Brust ---------------- */
+    'Incline Chest Press': E('Obere Brust', 'Vordere Schulter, Trizeps',
+      ['Sitz so einstellen, dass die Griffe auf Höhe der oberen Brust liegen.', 'Schulterblätter zurück und nach unten ziehen, Brust leicht heraus.', 'Griffe kontrolliert schräg nach oben drücken, ohne die Ellbogen ganz durchzustrecken.', 'Langsam zurückführen, bis du eine Dehnung in der Brust spürst.'],
+      ['Ellbogen etwa 45–60° vom Körper weg halten.', 'Gedanklich „die Hände zueinander drücken" verstärkt die Brustspannung.'],
+      ['Schultern nach vorne rollen lassen.', 'Gewicht unten abprallen lassen.']),
+    'Kurzhantel Chest Press': E('Brust', 'Vordere Schulter, Trizeps',
+      ['Mit den Hanteln auf den Oberschenkeln hinsetzen und dich kontrolliert zurücklegen.', 'Hanteln seitlich über der Brust halten, Schulterblätter zusammen.', 'Nach oben drücken, bis die Arme fast gestreckt sind.', 'Langsam absenken, bis die Hanteln etwa auf Brusthöhe sind.'],
+      ['Kurzhanteln erlauben mehr Bewegungsweg als die Langhantel – nutze ihn kontrolliert.', 'Füße fest am Boden, leichter Bogen im oberen Rücken.'],
+      ['Hanteln oben zusammenschlagen.', 'Ellbogen zu weit abspreizen (90°) – belastet die Schulter.']),
+    'Pec Fly': E('Brust', 'Vordere Schulter',
+      ['Sitz so einstellen, dass die Griffe auf Brusthöhe sind.', 'Arme leicht gebeugt, Ellbogen bleiben während der ganzen Bewegung im gleichen Winkel.', 'Griffe in einem Bogen vor der Brust zusammenführen.', 'Langsam öffnen, bis die Brust gedehnt ist.'],
+      ['Stell dir vor, du umarmst einen großen Baum.', 'Oben kurz anspannen und halten.'],
+      ['Mit den Armen drücken statt einen Bogen zu machen.', 'Zu weit öffnen und die Schulter überdehnen.']),
+    'Flachbankdrücken Langhantel': E('Brust', 'Vordere Schulter, Trizeps',
+      ['Auf die Bank legen, Augen etwa unter der Stange.', 'Etwas mehr als schulterbreit greifen, Schulterblätter zusammen und nach unten ziehen.', 'Stange ausheben und kontrolliert zur unteren Brust (Höhe Brustbein) absenken.', 'Kraftvoll nach oben drücken, Füße fest in den Boden.'],
+      ['Handgelenke gerade über den Ellbogen halten.', 'Bei schweren Sätzen immer mit Sicherheitsablagen oder Spotter trainieren.'],
+      ['Stange auf der Brust abprallen lassen.', 'Gesäß von der Bank heben.', 'Ellbogen komplett seitlich ausstellen.']),
+    'Schrägbankdrücken Langhantel': E('Obere Brust', 'Vordere Schulter, Trizeps',
+      ['Bank auf etwa 30–45° einstellen.', 'Schulterblätter zusammen, Stange etwas mehr als schulterbreit greifen.', 'Stange zur oberen Brust unterhalb des Schlüsselbeins absenken.', 'Nach oben drücken, bis die Arme fast gestreckt sind.'],
+      ['Flachere Neigung (30°) = mehr Brust, steiler = mehr Schulter.', 'Etwas weniger Gewicht als beim Flachbankdrücken einplanen.'],
+      ['Bank zu steil – dann wird es fast Schulterdrücken.', 'Stange zu weit unten absenken.']),
+    'Negativbankdrücken': E('Untere Brust', 'Trizeps, vordere Schulter',
+      ['Bank leicht negativ einstellen und die Beine sicher fixieren.', 'Stange etwas mehr als schulterbreit greifen.', 'Zur unteren Brust absenken.', 'Kontrolliert nach oben drücken.'],
+      ['Nur mit Spotter oder Sicherheitsablagen trainieren.', 'Langsam aufsetzen – Kopf liegt tiefer als die Hüfte.'],
+      ['Zu schnell absenken.', 'Ohne Sicherung schwer trainieren.']),
+    'Kurzhantel Fliegende': E('Brust', 'Vordere Schulter',
+      ['Auf der Flachbank liegen, Hanteln über der Brust, Handflächen zueinander.', 'Arme leicht beugen und den Winkel beibehalten.', 'Hanteln in einem weiten Bogen seitlich absenken, bis die Brust gedehnt ist.', 'Im gleichen Bogen wieder nach oben führen.'],
+      ['Lieber leichter und sauber – das Gewicht wirkt mit langem Hebel.', 'Unten nicht tiefer als Schulterhöhe gehen.'],
+      ['Arme durchstrecken (belastet die Ellbogen).', 'Daraus ein Drücken machen.']),
+    'Schräge Kurzhantel Fliegende': E('Obere Brust', 'Vordere Schulter',
+      ['Bank auf etwa 30° einstellen.', 'Hanteln über der oberen Brust, Arme leicht gebeugt.', 'In einem Bogen seitlich absenken.', 'Zurück nach oben führen und oben kurz anspannen.'],
+      ['Ellbogenwinkel konstant halten.', 'Langsame Absenkphase (2–3 Sekunden) bringt viel.'],
+      ['Zu schwer wählen und dann drücken.', 'Schultern nach vorne fallen lassen.']),
+    'Butterfly Maschine': E('Brust', 'Vordere Schulter',
+      ['Sitz so einstellen, dass die Griffe auf Brusthöhe sind.', 'Rücken fest ans Polster, Brust heraus.', 'Arme vor der Brust zusammenführen.', 'Langsam öffnen bis zur Dehnung.'],
+      ['Gut für Einsteiger, weil die Maschine die Bahn vorgibt.', 'Oben 1 Sekunde halten und die Brust anspannen.'],
+      ['Mit Schwung arbeiten.', 'Rücken vom Polster lösen.']),
+    'Cable Crossover': E('Brust', 'Vordere Schulter',
+      ['Kabelrollen oben einstellen, Griffe nehmen, einen Schritt nach vorne.', 'Leicht vorbeugen, Arme leicht gebeugt.', 'Griffe in einem Bogen nach unten vor dem Körper zusammenführen.', 'Kontrolliert zurück in die Dehnung.'],
+      ['Rollenhöhe variieren: von oben = untere Brust, von unten = obere Brust.', 'Konstante Spannung über die ganze Bewegung ist der Vorteil am Kabel.'],
+      ['Mit dem Oberkörper mitschwingen.', 'Zu viel Gewicht und zu kleine Bewegung.']),
+    'Liegestütze': E('Brust', 'Trizeps, vordere Schulter, Rumpf',
+      ['Hände etwas breiter als schulterbreit, Körper bildet eine gerade Linie.', 'Bauch und Gesäß anspannen.', 'Brust kontrolliert Richtung Boden absenken, Ellbogen etwa 45° vom Körper.', 'Kraftvoll wieder hochdrücken.'],
+      ['Zu schwer? Hände erhöht abstützen. Zu leicht? Füße erhöhen oder Gewichtsweste.', 'Ganze Bewegung ausführen statt halber Wiederholungen.'],
+      ['Hüfte durchhängen lassen.', 'Kopf nach vorne strecken.']),
+    'Dips (Brust)': E('Untere Brust', 'Trizeps, vordere Schulter',
+      ['An den Barren stützen, Arme gestreckt.', 'Oberkörper leicht nach vorne neigen.', 'Absenken, bis die Oberarme etwa parallel zum Boden sind.', 'Wieder hochdrücken.'],
+      ['Mehr Vorlage = mehr Brust, aufrechter = mehr Trizeps.', 'Bei Schulterbeschwerden nicht zu tief gehen.'],
+      ['Schultern zu den Ohren hochziehen.', 'Unten federn.']),
 
-const LEX_INFO = {
-  grow: {
-    title: 'So wächst ein Muskel',
-    intro: `Kein Zauber: Ein Muskel wächst, weil du ihm einen Grund dafür gibst – und danach Zeit und Material zum Bauen.`,
-    steps: [
-      ['1  Reiz', `Du trainierst hart genug (nah an das Muskelversagen). Der Muskel merkt: Das war mehr, als ich gewohnt bin.`],
-      ['2  Erholung', `Aufgebaut wird erst danach: im Schlaf, mit genug Essen und Eiweiß. Erholung ist kein Bonus, sondern der halbe Plan.`],
-      ['3  Anpassung', `Der Muskel wird etwas dicker und stärker, damit ihn das nächste Mal dieselbe Last weniger fordert.`],
-      ['4  Etwas mehr', `Damit es weitergeht, musst du den Reiz langsam steigern: mehr Gewicht, mehr Wiederholungen oder mehr Sätze. Das heißt progressive Überlastung. Genau dafür ist dein Progress-Tab da.`]
-    ],
-    numbers: [
-      ['6–12', 'Wiederholungen pro Satz sind ein praktischer Standard. Auch 5–30 wirken, wenn der Satz hart genug ist.'],
-      ['10–20', 'harte Sätze pro Muskelgruppe und Woche sind für viele ein guter Bereich. Anfänger wachsen auch mit weniger.'],
-      ['2×', 'pro Woche jede Muskelgruppe trainieren funktioniert für die meisten sehr gut.'],
-      ['1–3 min', 'Pause zwischen den Sätzen. Bei schweren Grundübungen eher länger.'],
-      ['1,6–2,2 g', 'Eiweiß pro kg Körpergewicht und Tag ist ein häufig empfohlener Bereich für Muskelaufbau.'],
-      ['7–9 h', 'Schlaf pro Nacht. Hier passiert ein großer Teil der Erholung.']
-    ],
-    note: `Das sind Richtwerte, keine Gesetze – jeder Körper ist anders. Bei Schmerzen, Verletzungen oder Vorerkrankungen sprich mit einer Ärztin, einem Arzt oder einem Trainer.`
-  },
-  terms: {
-    title: 'Begriffe von A bis Z',
-    intro: `Die wichtigsten Gym-Wörter, kurz und ohne Fachchinesisch.`,
-    list: [
-      ['1RM', `Dein „One-Rep-Max“: das schwerste Gewicht, das du genau einmal sauber bewegen kannst.`],
-      ['Compound-Übung', `Grundübung, bei der mehrere Gelenke und Muskeln arbeiten, z. B. Kniebeugen, Kreuzheben, Bankdrücken, Rudern.`],
-      ['Deload', `Eine leichtere Woche, in der du Gewicht oder Umfang senkst, damit sich der Körper erholt. Oft alle paar Wochen sinnvoll.`],
-      ['DOMS (Muskelkater)', `Verzögerter Muskelschmerz 1–3 Tage nach ungewohnter Belastung. Er sagt nichts darüber, wie gut das Training war.`],
-      ['Exzentrisch', `Die Phase, in der der Muskel sich unter Last verlängert, z. B. beim Absenken der Hantel. Konzentrisch ist das Gegenteil: Der Muskel verkürzt sich beim Heben.`],
-      ['Hypertrophie', `Das Dickenwachstum des Muskels – das, was man meint, wenn man „Muskelaufbau“ sagt.`],
-      ['Isolationsübung', `Eine Übung, die vor allem einen Muskel anspricht, z. B. Bizeps-Curl, Beinstrecker, Seitheben.`],
-      ['Isometrisch', `Der Muskel hält Spannung, ohne sich zu bewegen, z. B. Plank oder Dead Hang.`],
-      ['Mind-Muscle-Connection', `Dich bewusst auf den Muskel konzentrieren, den du trainierst. Hilft besonders bei Isolationsübungen.`],
-      ['Progressive Überlastung', `Den Trainingsreiz langsam steigern (Gewicht, Wiederholungen, Sätze), damit der Muskel weiter wachsen muss.`],
-      ['Pump', `Das Spannungsgefühl, wenn der Muskel nach dem Satz durchblutet ist. Fühlt sich gut an, ist aber kein Maß für Wachstum.`],
-      ['RIR / RPE', `RIR = „Reps in Reserve“: wie viele Wiederholungen du noch geschafft hättest. RIR 2 heißt: noch zwei wären gegangen. RPE ist dieselbe Idee als Anstrengungsskala von 1 bis 10.`],
-      ['ROM (Range of Motion)', `Wie weit du eine Übung bewegst. Eine große, saubere Bewegung ist meist besser als halbe Wiederholungen mit mehr Gewicht.`],
-      ['Superset', `Zwei Übungen direkt nacheinander ohne Pause, z. B. Bizeps und Trizeps. Spart Zeit.`],
-      ['Agonist / Antagonist', `Agonist = der Muskel, der die Bewegung macht. Antagonist = sein Gegenspieler, z. B. Bizeps und Trizeps oder Brust und Rücken.`]
-    ]
-  },
-  myths: {
-    title: 'Mythen-Check',
-    intro: `Was man im Gym oft hört – und was davon stimmt.`,
-    list: [
-      ['„Muskeln werden zu Fett, wenn man aufhört.“', `Nein. Muskel und Fett sind zwei verschiedene Gewebe. Ohne Training schrumpft der Muskel, und wer weiter viel isst, kann Fett zulegen – aber das eine wird nicht zum anderen.`],
-      ['„Ohne Muskelkater war das Training umsonst.“', `Nein. Muskelkater zeigt eher, dass der Reiz ungewohnt war. Du kannst gut wachsen, ohne dass es am nächsten Tag wehtut.`],
-      ['„Crunches machen den Bauch flach.“', `Nein. Man kann nicht gezielt am Bauch abnehmen. Crunches bauen Bauchmuskeln auf – wie sichtbar sie sind, hängt vom Körperfett ab.`],
-      ['„Frauen werden schnell zu bullig.“', `Nein. Für große, schwere Muskeln braucht es jahrelanges, hartes Training und viel Essen. Krafttraining macht meistens straffer und stärker.`],
-      ['„Mehr Eiweiß ist immer besser.“', `Nein. Ab einer gewissen Menge bringt zusätzliches Eiweiß kaum noch etwas. Der empfohlene Bereich reicht meistens.`],
-      ['„Leichte Gewichte tonen, schwere machen dick.“', `Nein. Ein Muskel wächst bei leichten wie bei schweren Gewichten, wenn der Satz anstrengend genug ist. Schwerer macht nicht automatisch dicker.`]
-    ]
-  }
-};
+    /* ---------------- Schulter ---------------- */
+    'Schulterpresse': E('Vordere und seitliche Schulter', 'Trizeps, obere Brust',
+      ['Sitz so einstellen, dass die Griffe auf Schulterhöhe sind.', 'Rücken fest ans Polster.', 'Griffe senkrecht nach oben drücken, ohne die Ellbogen zu blockieren.', 'Kontrolliert bis etwa Kinnhöhe zurück.'],
+      ['Ellbogen leicht vor dem Körper halten, nicht ganz seitlich.', 'Rumpf anspannen, kein Hohlkreuz.'],
+      ['Hohlkreuz machen.', 'Nur halbe Bewegung ausführen.']),
+    'Einarmiges Seitheben': E('Seitliche Schulter', 'Obere Trapezmuskeln',
+      ['Seitlich zum Kabel oder mit Kurzhantel stehen, freie Hand stützt sich ab.', 'Arm leicht gebeugt, Hantel an der Seite.', 'Arm seitlich bis etwa Schulterhöhe heben.', 'Langsam absenken.'],
+      ['Einarmig hilft, sich voll auf eine Seite zu konzentrieren.', 'Führe mit dem Ellbogen, nicht mit der Hand.'],
+      ['Mit Schwung aus dem Oberkörper.', 'Schulter zum Ohr hochziehen.']),
+    'Langhantel Überkopfdrücken': E('Vordere Schulter', 'Seitliche Schulter, Trizeps, Rumpf',
+      ['Stange auf Höhe der oberen Brust, etwas mehr als schulterbreit greifen.', 'Gesäß und Bauch fest anspannen.', 'Stange senkrecht über den Kopf drücken, Kopf dabei kurz zurücknehmen.', 'Oben steht die Stange über der Fußmitte, dann kontrolliert absenken.'],
+      ['Stehend trainiert stark den Rumpf mit.', 'Unterarme senkrecht unter der Stange halten.'],
+      ['Ins Hohlkreuz fallen.', 'Stange vor dem Körper statt darüber.']),
+    'Kurzhantel Überkopfdrücken': E('Vordere Schulter', 'Seitliche Schulter, Trizeps',
+      ['Sitzend oder stehend, Hanteln auf Schulterhöhe, Handflächen nach vorne.', 'Rumpf anspannen.', 'Hanteln nach oben drücken, bis sie sich fast berühren.', 'Kontrolliert zurück auf Schulterhöhe.'],
+      ['Jede Seite muss allein stabilisieren – gut gegen Dysbalancen.', 'Rückenlehne leicht aufrecht (ca. 80°) entlastet den unteren Rücken.'],
+      ['Hanteln zu weit seitlich absenken.', 'Mit Schwung aus den Beinen drücken.']),
+    'Arnold Press': E('Vordere und seitliche Schulter', 'Trizeps',
+      ['Hanteln vor dem Gesicht starten, Handflächen zu dir.', 'Beim Hochdrücken die Hände nach außen drehen.', 'Oben zeigen die Handflächen nach vorne.', 'Beim Absenken die Drehung rückwärts ausführen.'],
+      ['Weniger Gewicht als beim normalen Drücken wählen.', 'Drehung flüssig mit der Bewegung koppeln.'],
+      ['Drehung erst oben „nachholen".', 'Zu schnell werden.']),
+    'Seitheben Kurzhantel': E('Seitliche Schulter', 'Obere Trapezmuskeln',
+      ['Aufrecht stehen, Hanteln seitlich, Arme leicht gebeugt.', 'Arme seitlich bis etwa Schulterhöhe anheben.', 'Kurz oben halten.', 'Langsam absenken.'],
+      ['Leicht nach vorne gebeugt stehen und die Arme minimal vor dem Körper führen.', 'Leichte Gewichte und viele saubere Wiederholungen funktionieren hier sehr gut.'],
+      ['Zu schwer und mit Schwung.', 'Hände höher als die Ellbogen.']),
+    'Seitheben Kabelzug': E('Seitliche Schulter', 'Obere Trapezmuskeln',
+      ['Kabel unten, Griff mit der Hand, die vom Kabel weg ist.', 'Seitlich zur Maschine stehen.', 'Arm seitlich bis Schulterhöhe heben.', 'Kontrolliert absenken.'],
+      ['Das Kabel hält auch unten Spannung – der Vorteil gegenüber der Hantel.', 'Oberkörper ruhig halten.'],
+      ['Mit dem Oberkörper wegkippen.', 'Zu hohes Gewicht.']),
+    'Seitheben Maschine': E('Seitliche Schulter', 'Obere Trapezmuskeln',
+      ['Sitz so einstellen, dass die Schulter auf Höhe der Drehachse ist.', 'Arme an die Polster legen.', 'Arme seitlich nach oben drücken.', 'Langsam absenken.'],
+      ['Gut, um die Schulter gezielt bis an die Grenze zu trainieren.', 'Schultern unten lassen.'],
+      ['Schultern hochziehen.', 'Bewegung abkürzen.']),
+    'Frontheben Kurzhantel': E('Vordere Schulter', 'Obere Brust',
+      ['Aufrecht stehen, Hanteln vor den Oberschenkeln.', 'Arme leicht gebeugt nach vorne bis Schulterhöhe heben.', 'Kurz halten.', 'Langsam absenken.'],
+      ['Die vordere Schulter wird durch Drücken schon viel trainiert – oft reicht wenig Volumen.', 'Abwechselnd oder beidarmig möglich.'],
+      ['Mit dem Rücken nach hinten lehnen.', 'Über Kopfhöhe heben.']),
+    'Reverse Butterfly': E('Hintere Schulter', 'Oberer Rücken, Trapezmuskeln',
+      ['Mit der Brust zum Polster sitzen, Griffe vor dir.', 'Arme leicht gebeugt.', 'Arme in einem Bogen nach hinten/außen ziehen.', 'Langsam zurück.'],
+      ['Denk an „Hände weit nach außen" statt „Schulterblätter zusammen".', 'Wichtig als Ausgleich zu viel Drückübungen.'],
+      ['Mit Schwung arbeiten.', 'Schultern hochziehen.']),
+    'Face Pulls': E('Hintere Schulter', 'Oberer Rücken, Rotatorenmanschette',
+      ['Kabel auf Kopfhöhe, Seilgriff mit beiden Händen.', 'Einen Schritt zurück, Arme gestreckt.', 'Seil Richtung Gesicht ziehen, Hände dabei nach außen auseinander.', 'Am Ende zeigen die Hände nach oben, dann kontrolliert zurück.'],
+      ['Sehr gut für Schultergesundheit und Haltung.', 'Leichtes Gewicht, volle Kontrolle.'],
+      ['Mit dem Oberkörper nach hinten lehnen.', 'Zum Hals statt zum Gesicht ziehen.']),
+    'Aufrechtes Rudern': E('Seitliche Schulter', 'Trapezmuskeln',
+      ['Stange schulterbreit oder etwas breiter greifen.', 'Stange nah am Körper nach oben ziehen, Ellbogen führen.', 'Bis etwa unter die Brust ziehen.', 'Kontrolliert absenken.'],
+      ['Breiterer Griff schont die Schulter.', 'Ellbogen nicht über Schulterhöhe ziehen.'],
+      ['Zu eng greifen und bis zum Kinn ziehen.', 'Mit Schwung arbeiten.']),
 
-const lexKey = g => [g.id, g.nick, ...g.muskeln.flatMap(m => [m[0], m[1]])].join(' ').toLowerCase();
+    /* ---------------- Trizeps ---------------- */
+    'Pushdowns': E('Trizeps', 'Unterarme',
+      ['Am Kabel stehen, Griff auf Brusthöhe.', 'Ellbogen eng am Körper fixieren.', 'Griff nach unten drücken, bis die Arme gestreckt sind.', 'Kontrolliert zurück, Ellbogen bleiben dabei an der Seite.'],
+      ['Nur der Unterarm bewegt sich.', 'Unten kurz fest anspannen.'],
+      ['Ellbogen wandern nach vorne.', 'Mit dem Oberkörper Gewicht drücken.']),
+    'Overhead Push': E('Trizeps (langer Kopf)', '–',
+      ['Rücken zum Kabel, Seil hinter dem Kopf.', 'Leicht nach vorne lehnen, Ellbogen zeigen nach vorne.', 'Arme nach vorne/oben strecken.', 'Kontrolliert zurück in die Dehnung.'],
+      ['Die Dehnung über Kopf trainiert besonders den langen Trizepskopf.', 'Ellbogen möglichst an Ort und Stelle halten.'],
+      ['Ellbogen weit auseinander.', 'Bewegung aus der Schulter.']),
+    'Enges Bankdrücken': E('Trizeps', 'Brust, vordere Schulter',
+      ['Auf die Flachbank legen, Stange etwa schulterbreit greifen.', 'Ellbogen eng am Körper.', 'Stange zur unteren Brust absenken.', 'Nach oben drücken.'],
+      ['Schulterbreit reicht – noch enger belastet die Handgelenke.', 'Erlaubt relativ schwere Gewichte für den Trizeps.'],
+      ['Zu eng greifen.', 'Ellbogen ausstellen.']),
+    'French Press Langhantel': E('Trizeps', '–',
+      ['Auf der Flachbank liegen, SZ- oder Langhantel über der Brust.', 'Oberarme senkrecht halten.', 'Stange durch Beugen der Ellbogen Richtung Stirn/hinter den Kopf absenken.', 'Wieder strecken.'],
+      ['SZ-Stange ist angenehmer für die Handgelenke.', 'Oberarme dürfen leicht nach hinten kippen – das erhöht die Dehnung.'],
+      ['Ellbogen nach außen fallen lassen.', 'Zu schnell zur Stirn.']),
+    'French Press Kurzhantel': E('Trizeps', '–',
+      ['Liegend oder sitzend, Kurzhantel(n) über dem Kopf.', 'Oberarme bleiben ruhig.', 'Hantel hinter den Kopf absenken.', 'Arme wieder strecken.'],
+      ['Mit einer Hantel beidhändig oder je Arm eine Hantel.', 'Langsam absenken.'],
+      ['Ellbogen weit auseinander.', 'Mit der Schulter mitdrücken.']),
+    'Kickbacks': E('Trizeps', '–',
+      ['Oberkörper vorgebeugt, eine Hand stützt sich ab.', 'Oberarm parallel zum Boden, eng am Körper.', 'Unterarm nach hinten strecken.', 'Langsam zurück.'],
+      ['Oberarm muss komplett ruhig bleiben.', 'Leichtes Gewicht reicht völlig.'],
+      ['Oberarm hängt nach unten.', 'Schwung holen.']),
+    'Dips (Trizeps)': E('Trizeps', 'Brust, vordere Schulter',
+      ['An den Barren stützen.', 'Oberkörper möglichst aufrecht.', 'Absenken, bis die Oberarme etwa parallel zum Boden sind.', 'Kraftvoll hochdrücken.'],
+      ['Aufrechter Oberkörper = mehr Trizeps.', 'Zusatzgewicht über einen Dipgürtel möglich.'],
+      ['Zu tief bei Schulterproblemen.', 'Schultern hochziehen.']),
+    'Seil-Pushdowns': E('Trizeps', '–',
+      ['Seil am Kabel oben, Ellbogen eng am Körper.', 'Seil nach unten drücken.', 'Unten die Seilenden nach außen ziehen.', 'Kontrolliert zurück.'],
+      ['Das Auseinanderziehen unten verstärkt die Kontraktion.', 'Ellbogen fixieren.'],
+      ['Mit dem Oberkörper drücken.', 'Ellbogen wandern nach vorne.']),
+    'Enge Liegestütze': E('Trizeps', 'Brust, Schulter, Rumpf',
+      ['Hände unter den Schultern oder etwas enger.', 'Körper gerade.', 'Absenken, Ellbogen eng am Körper.', 'Hochdrücken.'],
+      ['Knie am Boden als leichtere Variante.', 'Gut als Finisher.'],
+      ['Ellbogen ausstellen.', 'Hüfte hängt durch.']),
+    'Bankdips': E('Trizeps', 'Vordere Schulter',
+      ['Hände hinter dir auf der Bank, Finger nach vorne.', 'Beine gestreckt oder angewinkelt.', 'Durch Beugen der Ellbogen absenken.', 'Wieder hochdrücken.'],
+      ['Beine angewinkelt = leichter.', 'Rücken nah an der Bank halten.'],
+      ['Zu tief absenken – belastet die Schulter.', 'Mit den Beinen mithelfen.']),
 
-SCREENS.lexicon = (entry, host) => {
-  const st = entry.state;
-  if (st.q == null) st.q = '';
-  const q = st.q.trim().toLowerCase();
-  const card = g => `<div class="card row tap" data-lex-key="${esc(lexKey(g))}" style="${!q || lexKey(g).includes(q) ? '' : 'display:none'}" data-on="${host.on(() => push('muscle', { id: g.id }))}">
-      <div class="lx-badge">${ic('dumbbell')}</div>
-      <div class="col g4" style="flex:1">
-        <div class="row" style="gap:8px"><span class="headline">${esc(g.id)}</span><span class="tag">${esc(g.nick)}</span></div>
-        <div class="sub muted">${esc(g.tag)}</div>
-        <div class="caption muted">${g.muskeln.length} Muskeln erklärt</div>
-      </div>
-      <span class="muted">${ic('chevR')}</span></div>`;
-  const li = (icon, title, fn) => `<button class="li ind" data-on="${host.on(fn)}"><span class="ic">${ic(icon)}</span><span style="flex:1">${title}</span><span class="chev">${ic('chevR')}</span></button>`;
-  return {
-    title: 'Muskel-Lexikon', large: true,
-    body: `<div class="list-wrap" style="gap:22px">
-      <div class="muted">Was sitzt wo, was macht der Muskel – und wie trainierst du ihn richtig? Verständlich erklärt, passend zu den Muskelgruppen in deinem Training.</div>
-      <label class="search">${ic('search')}<input placeholder="Muskel suchen, z. B. Latissimus" value="${esc(st.q)}" autocomplete="off" data-in="${host.on(el => {
-        st.q = el.value; const term = st.q.trim().toLowerCase();
-        let any = false;
-        screenEl().querySelectorAll('[data-lex-key]').forEach(c => { const hit = !term || c.dataset.lexKey.includes(term); c.style.display = hit ? '' : 'none'; any = any || hit; });
-        const none = screenEl().querySelector('#lx-none'); if (none) none.style.display = any ? 'none' : '';
-      })}"></label>
-      <div class="col g12">${LEX.map(card).join('')}<div id="lx-none" class="muted center" style="display:none">Kein Muskel gefunden.</div></div>
-      <div><div class="group-title">Grundlagen</div><div class="group">
-        ${li('chartUp', 'So wächst ein Muskel', () => push('lexInfo', { kind: 'grow' }))}
-        ${li('hash', 'Begriffe von A bis Z', () => push('lexInfo', { kind: 'terms' }))}
-        ${li('info', 'Mythen-Check', () => push('lexInfo', { kind: 'myths' }))}
-      </div></div>
-    </div>`
+    /* ---------------- Bizeps ---------------- */
+    'Preacher Curl': E('Bizeps', 'Oberarmmuskel (Brachialis)',
+      ['Oberarme flach auf das Polster legen.', 'Stange oder Griff mit Untergriff.', 'Gewicht nach oben curlen.', 'Langsam absenken, fast bis zur Streckung.'],
+      ['Das Polster verhindert Schwung – sehr isoliert.', 'Unten nicht ganz durchstrecken, Spannung halten.'],
+      ['Unten fallen lassen.', 'Gesäß hebt sich vom Sitz.']),
+    'Kurzhantel Finisher': E('Bizeps', 'Unterarme',
+      ['Leichte Kurzhanteln wählen.', 'Curls mit hoher Wiederholungszahl oder abwechselnd bis zur Erschöpfung.', 'Am Ende des Trainings als letzte Übung.', 'Saubere Technik trotz Müdigkeit halten.'],
+      ['Ideal, um den Bizeps am Schluss noch einmal komplett auszureizen.', 'Kurze Pausen (30–60 s).'],
+      ['Technik wird unsauber.', 'Zu schweres Gewicht.']),
+    'Langhantel Curls': E('Bizeps', 'Unterarme',
+      ['Schulterbreit im Untergriff greifen.', 'Ellbogen an der Seite fixieren.', 'Stange nach oben curlen.', 'Langsam absenken.'],
+      ['SZ-Stange schont die Handgelenke.', 'Klassische Übung für schwere Gewichte.'],
+      ['Mit dem Rücken Schwung holen.', 'Ellbogen nach vorne schieben.']),
+    'Kurzhantel Curls': E('Bizeps', 'Unterarme',
+      ['Hanteln seitlich, Handflächen zeigen nach vorne.', 'Ellbogen am Körper.', 'Abwechselnd oder gleichzeitig nach oben curlen.', 'Langsam absenken.'],
+      ['Während des Curls die Hand leicht nach außen drehen (Supination).', 'Volle Bewegung von unten bis oben.'],
+      ['Schwung aus der Hüfte.', 'Nur halbe Wiederholungen.']),
+    'Hammer Curls': E('Oberarmmuskel (Brachialis), Unterarm', 'Bizeps',
+      ['Hanteln mit neutralem Griff (Daumen oben).', 'Ellbogen am Körper.', 'Nach oben curlen, Griff bleibt neutral.', 'Langsam absenken.'],
+      ['Macht den Oberarm optisch breiter.', 'Gut auch für die Unterarme.'],
+      ['Schwung holen.', 'Ellbogen nach vorne.']),
+    'Konzentrationscurls': E('Bizeps', '–',
+      ['Sitzend, Ellbogen an der Innenseite des Oberschenkels abstützen.', 'Hantel hängt nach unten.', 'Nach oben curlen und oben fest anspannen.', 'Langsam absenken.'],
+      ['Sehr isoliert, ideal für die Mind-Muscle-Connection.', 'Oben 1 Sekunde halten.'],
+      ['Mit dem Oberkörper mitziehen.', 'Zu schnell.']),
+    'Kabelcurls': E('Bizeps', 'Unterarme',
+      ['Kabel unten, Stange oder Seil greifen.', 'Ellbogen am Körper.', 'Nach oben curlen.', 'Kontrolliert zurück.'],
+      ['Konstante Spannung über die ganze Bewegung.', 'Gut für höhere Wiederholungen.'],
+      ['Zu weit weg von der Maschine stehen.', 'Schwung.']),
+    'Bizeps-Curl Maschine': E('Bizeps', '–',
+      ['Sitz so einstellen, dass der Ellbogen auf Höhe der Drehachse liegt.', 'Oberarme auf das Polster.', 'Griffe nach oben curlen.', 'Langsam zurück.'],
+      ['Sehr sicher und gut bis zur Muskelerschöpfung.', 'Volle Bewegungsweite nutzen.'],
+      ['Sitz falsch eingestellt.', 'Gewicht fallen lassen.']),
+    'Schräghantelbank Curls': E('Bizeps (langer Kopf)', 'Unterarme',
+      ['Auf eine Schrägbank (ca. 45–60°) legen, Arme hängen nach unten.', 'Handflächen nach vorne.', 'Hanteln nach oben curlen, Oberarme bleiben hinten.', 'Langsam ganz absenken.'],
+      ['Starke Dehnung des Bizeps – weniger Gewicht nehmen.', 'Schultern bleiben an der Bank.'],
+      ['Oberarme nach vorne nehmen.', 'Unten nicht ganz ablassen.']),
+    '21er Curls': E('Bizeps', 'Unterarme',
+      ['7 Wiederholungen von unten bis zur Hälfte.', '7 Wiederholungen von der Hälfte bis oben.', '7 volle Wiederholungen.', 'Alles ohne Pause hintereinander.'],
+      ['Deutlich weniger Gewicht als bei normalen Curls.', 'Gut als Intensitätstechnik am Ende.'],
+      ['Teilbewegungen werden ungenau.', 'Schwung, sobald es brennt.']),
+
+    /* ---------------- Rücken ---------------- */
+    'Enger Latzug': E('Latissimus', 'Bizeps, mittlerer Rücken',
+      ['Engen Griff (V-Griff) einhängen, Oberschenkel unter dem Polster fixieren.', 'Brust heraus, leicht zurücklehnen.', 'Griff zur oberen Brust ziehen, Ellbogen nach unten.', 'Langsam nach oben in die Dehnung.'],
+      ['Denk an „Ellbogen in die Hosentaschen".', 'Oben die Schultern bewusst mitgehen lassen.'],
+      ['Mit Schwung aus dem Oberkörper.', 'Nur mit den Armen ziehen.']),
+    'Breiter Latzug': E('Latissimus', 'Bizeps, hintere Schulter',
+      ['Stange breit im Obergriff greifen.', 'Brust heraus, leicht zurücklehnen.', 'Stange zur oberen Brust ziehen.', 'Kontrolliert nach oben.'],
+      ['Nicht hinter den Nacken ziehen.', 'Schulterblätter zuerst nach unten ziehen, dann die Arme.'],
+      ['Weit nach hinten lehnen und reißen.', 'Halbe Bewegung oben.']),
+    'Enges Rudern': E('Mittlerer Rücken, Latissimus', 'Bizeps, hintere Schulter',
+      ['Aufrecht sitzen, Griff vor dir, Brust heraus.', 'Griff zum Bauch ziehen, Ellbogen eng am Körper.', 'Schulterblätter am Ende zusammenziehen.', 'Langsam nach vorne in die Dehnung.'],
+      ['Oberkörper bleibt ruhig – nicht mitschaukeln.', 'Kurz hinten halten.'],
+      ['Mit dem Rücken nach hinten reißen.', 'Runder Rücken.']),
+    'unterer Rückenstrecker': E('Unterer Rücken (Rückenstrecker)', 'Gesäß, Beinbeuger',
+      ['In die Maschine oder Hyperextension-Bank, Hüfte am Polster.', 'Oberkörper kontrolliert nach vorne senken.', 'Wieder hochkommen bis zur geraden Linie.', 'Nicht ins Hohlkreuz überstrecken.'],
+      ['Langsam und kontrolliert, gern mit kurzer Pause oben.', 'Zusatzgewicht erst, wenn 15 saubere Wiederholungen gehen.'],
+      ['Ruckartige Bewegungen.', 'Überstrecken oben.']),
+    'T-Bar': E('Mittlerer Rücken, Latissimus', 'Bizeps, hintere Schulter',
+      ['Über die Stange stellen, Knie leicht gebeugt, Rücken gerade.', 'Oberkörper etwa 45° vorgebeugt.', 'Griff zum Bauch ziehen.', 'Kontrolliert absenken.'],
+      ['Mit Brustauflage schont es den unteren Rücken.', 'Schulterblätter am Ende zusammen.'],
+      ['Runder Rücken.', 'Mit dem Oberkörper hochreißen.']),
+    'Langhantelrudern vorgebeugt': E('Mittlerer Rücken, Latissimus', 'Bizeps, hintere Schulter, unterer Rücken',
+      ['Stange schulterbreit greifen, Knie leicht gebeugt.', 'Aus der Hüfte vorbeugen, Rücken gerade.', 'Stange zum Bauchnabel ziehen.', 'Kontrolliert absenken.'],
+      ['Rumpf fest anspannen.', 'Gewicht so wählen, dass der Oberkörper ruhig bleibt.'],
+      ['Runder Rücken.', 'Oberkörper richtet sich mit jeder Wiederholung auf.']),
+    'Kurzhantelrudern einarmig': E('Latissimus', 'Mittlerer Rücken, Bizeps',
+      ['Eine Hand und ein Knie auf der Bank, Rücken gerade.', 'Hantel hängt nach unten.', 'Hantel zur Hüfte ziehen, Ellbogen nah am Körper.', 'Langsam absenken.'],
+      ['Zur Hüfte ziehen = mehr Lat, zur Brust = mehr oberer Rücken.', 'Unten die Schulter etwas mitgehen lassen.'],
+      ['Oberkörper aufdrehen.', 'Mit Schwung ziehen.']),
+    'Sitzendes Kabelrudern': E('Mittlerer Rücken, Latissimus', 'Bizeps, hintere Schulter',
+      ['Aufrecht sitzen, Füße auf den Plattformen, Knie leicht gebeugt.', 'Griff zum Bauch ziehen.', 'Schulterblätter zusammen.', 'Kontrolliert nach vorne.'],
+      ['Brust heraus, Oberkörper bleibt aufrecht.', 'Vorne die Dehnung mitnehmen, ohne rund zu werden.'],
+      ['Weit nach hinten lehnen.', 'Runder Rücken vorne.']),
+    'Chest Supported Rudern': E('Mittlerer Rücken', 'Latissimus, hintere Schulter, Bizeps',
+      ['Mit der Brust ans Polster legen.', 'Griffe greifen, Arme gestreckt.', 'Griffe nach hinten ziehen.', 'Langsam zurück.'],
+      ['Das Polster schont den unteren Rücken komplett.', 'Gut, um den Rücken isoliert schwer zu trainieren.'],
+      ['Brust vom Polster heben.', 'Zu kurze Bewegung.']),
+    'Shrugs': E('Obere Trapezmuskeln', 'Unterarme',
+      ['Hantel(n) seitlich oder Stange vor dem Körper halten.', 'Schultern gerade nach oben ziehen.', 'Oben kurz halten.', 'Langsam absenken.'],
+      ['Nicht die Schultern kreisen lassen – gerade hoch und runter.', 'Zughilfen helfen bei schweren Gewichten.'],
+      ['Kopf nach vorne schieben.', 'Mit den Armen ziehen.']),
+    'Kreuzheben': E('Gesäß, Beinbeuger, unterer Rücken', 'Rücken, Trapez, Unterarme, Beine',
+      ['Füße hüftbreit, Stange über der Fußmitte.', 'Stange schulterbreit greifen, Rücken gerade, Brust heraus.', 'Stange nah am Körper anheben, Hüfte und Knie gemeinsam strecken.', 'Oben gerade stehen, dann kontrolliert absetzen.'],
+      ['Komplexe Übung – Technik zuerst mit leichtem Gewicht lernen, am besten mit Trainer.', 'Vor dem Anheben „Spannung aufbauen": Stange leicht nach oben ziehen, bevor sie sich bewegt.'],
+      ['Runder Rücken.', 'Stange entfernt sich vom Körper.', 'Oben ins Hohlkreuz lehnen.']),
+    'Klimmzüge Untergriff': E('Latissimus, Bizeps', 'Mittlerer Rücken',
+      ['Schulterbreit im Untergriff an die Stange hängen.', 'Schulterblätter nach unten ziehen.', 'Hochziehen, bis das Kinn über der Stange ist.', 'Kontrolliert ganz absenken.'],
+      ['Untergriff ist meist etwas leichter als Obergriff.', 'Zu schwer? Mit Band oder Maschine unterstützen.'],
+      ['Mit den Beinen schwingen.', 'Unten nicht ganz absenken.']),
+    'Klimmzüge': E('Latissimus', 'Bizeps, mittlerer Rücken, Unterarme',
+      ['An der Stange etwas mehr als schulterbreit im Obergriff hängen.', 'Schulterblätter zuerst nach unten ziehen.', 'Hochziehen, bis das Kinn über der Stange ist.', 'Kontrolliert ganz absenken.'],
+      ['Noch keine Klimmzüge? Mit negativen Wiederholungen (nur langsam ablassen) anfangen.', 'Zusatzgewicht über einen Gürtel, wenn 10+ saubere Wiederholungen gehen.'],
+      ['Kipping/Schwung.', 'Halbe Wiederholungen.']),
+
+    /* ---------------- Beine ---------------- */
+    'Beinpresse': E('Oberschenkel vorne (Quadrizeps)', 'Gesäß, Beinbeuger',
+      ['Rücken und Gesäß fest ans Polster.', 'Füße schulterbreit mittig auf der Platte.', 'Platte kontrolliert absenken, bis die Knie etwa 90° gebeugt sind.', 'Hochdrücken, ohne die Knie ganz durchzustrecken.'],
+      ['Füße höher = mehr Gesäß und Beinbeuger, tiefer = mehr Quadrizeps.', 'Knie zeigen in Richtung der Zehen.'],
+      ['Gesäß hebt sich vom Polster (zu tief).', 'Knie durchdrücken.', 'Knie fallen nach innen.']),
+    'Beinstrecker': E('Quadrizeps', '–',
+      ['Rücken ans Polster, Knie auf Höhe der Drehachse.', 'Polster vorne über den Knöcheln.', 'Beine strecken.', 'Langsam absenken.'],
+      ['Oben 1 Sekunde fest anspannen.', 'Gut als Ergänzung zu Kniebeugen oder Beinpresse.'],
+      ['Gewicht hochschleudern.', 'Gesäß hebt sich.']),
+    'Beinbeuger': E('Beinbeuger (hintere Oberschenkel)', 'Waden',
+      ['Liegend oder sitzend, Knie auf Höhe der Drehachse.', 'Polster über den Fersen bzw. unter den Waden.', 'Beine beugen.', 'Langsam strecken.'],
+      ['Sitzend ist der Muskel stärker gedehnt – oft effektiver.', 'Hüfte bleibt am Polster.'],
+      ['Hüfte hebt sich (liegend).', 'Zu schnell.']),
+    'Adduktoren': E('Oberschenkel innen (Adduktoren)', '–',
+      ['Sitz einstellen, Beine an die Polster.', 'Beine nach innen zusammendrücken.', 'Kurz halten.', 'Kontrolliert öffnen.'],
+      ['Startposition nicht zu weit öffnen.', 'Langsame Bewegung.'],
+      ['Gewicht zurückfallen lassen.', 'Zu weite Startposition.']),
+    'Kniebeugen Langhantel': E('Quadrizeps, Gesäß', 'Adduktoren, Beinbeuger, Rumpf',
+      ['Stange auf dem oberen Rücken (nicht auf dem Nacken), Füße etwa schulterbreit.', 'Tief einatmen, Bauch fest anspannen.', 'Hüfte nach hinten und unten, Knie folgen den Zehen.', 'Mindestens bis Oberschenkel parallel, dann kraftvoll hochdrücken.'],
+      ['Füße leicht ausgedreht, Gewicht auf dem ganzen Fuß.', 'Im Rack mit Sicherheitsablagen trainieren.'],
+      ['Knie fallen nach innen.', 'Fersen heben ab.', 'Runder Rücken unten.']),
+    'Kniebeugen Kurzhantel': E('Quadrizeps, Gesäß', 'Rumpf',
+      ['Hanteln seitlich oder eine Hantel vor der Brust (Goblet).', 'Füße schulterbreit.', 'In die Hocke gehen, Oberkörper aufrecht.', 'Hochdrücken.'],
+      ['Goblet-Variante ist ideal zum Technik lernen.', 'Ellbogen zwischen die Knie führen.'],
+      ['Nach vorne kippen.', 'Fersen heben ab.']),
+    'Frontkniebeugen': E('Quadrizeps', 'Gesäß, Rumpf, oberer Rücken',
+      ['Stange vorne auf den Schultern, Ellbogen hoch.', 'Füße schulterbreit.', 'Aufrecht tief in die Hocke.', 'Hochdrücken, Ellbogen bleiben oben.'],
+      ['Sehr aufrechter Oberkörper – schont den unteren Rücken.', 'Mobilität in Handgelenken hilft; alternativ Arme verschränken.'],
+      ['Ellbogen fallen ab.', 'Oberkörper kippt nach vorne.']),
+    'Ausfallschritte': E('Quadrizeps, Gesäß', 'Beinbeuger, Adduktoren',
+      ['Aufrecht stehen, Hanteln seitlich.', 'Großen Schritt nach vorne.', 'Hinteres Knie Richtung Boden absenken.', 'Über das vordere Bein zurück oder weiter gehen.'],
+      ['Längerer Schritt = mehr Gesäß.', 'Vorderes Knie bleibt über dem Fuß.'],
+      ['Vorderes Knie fällt nach innen.', 'Oberkörper kippt.']),
+    'Bulgarian Split Squat': E('Quadrizeps, Gesäß', 'Adduktoren',
+      ['Hinterer Fuß auf einer Bank.', 'Vorderer Fuß weit genug vorne.', 'Senkrecht nach unten absenken.', 'Über das vordere Bein hochdrücken.'],
+      ['Sehr effektiv, auch mit wenig Gewicht.', 'Erst Balance finden, dann Gewicht steigern.'],
+      ['Zu kurzer Abstand.', 'Mit dem hinteren Bein drücken.']),
+    'Rumänisches Kreuzheben': E('Beinbeuger, Gesäß', 'Unterer Rücken',
+      ['Stange vor den Oberschenkeln, Knie leicht gebeugt.', 'Hüfte weit nach hinten schieben, Stange gleitet an den Beinen nach unten.', 'Absenken, bis du die Dehnung hinten im Oberschenkel spürst.', 'Hüfte nach vorne schieben und aufrichten.'],
+      ['Die Knie bleiben fast im gleichen Winkel – es ist eine Hüftbewegung.', 'Rücken bleibt die ganze Zeit gerade.'],
+      ['Runder Rücken.', 'Zu stark in die Knie gehen.']),
+    'Hüftstoßen': E('Gesäß', 'Beinbeuger',
+      ['Oberer Rücken an der Bank, Stange gepolstert auf der Hüfte.', 'Füße hüftbreit, Knie etwa 90°.', 'Hüfte nach oben drücken, bis der Körper eine Linie bildet.', 'Oben Gesäß anspannen, dann absenken.'],
+      ['Kinn leicht zur Brust.', 'Polster für die Stange benutzen.'],
+      ['Ins Hohlkreuz drücken.', 'Füße zu weit weg.']),
+    'Abduktoren': E('Gesäß (seitlich)', 'Hüftmuskeln',
+      ['Sitz einstellen, Beine innen an die Polster.', 'Beine nach außen drücken.', 'Kurz halten.', 'Kontrolliert zurück.'],
+      ['Leicht nach vorne gelehnt trifft es das Gesäß stärker.', 'Langsame Bewegung.'],
+      ['Gewicht zurückfallen lassen.', 'Mit Schwung arbeiten.']),
+    'Wadenheben stehend': E('Waden (Zwillingswadenmuskel)', '–',
+      ['Fußballen auf der Kante, Fersen frei.', 'Knie gestreckt.', 'Auf die Zehenspitzen hochdrücken.', 'Fersen tief absenken bis zur Dehnung.'],
+      ['Unten 1–2 Sekunden in der Dehnung halten.', 'Waden mögen höhere Wiederholungen (10–20).'],
+      ['Wippen ohne volle Bewegung.', 'Knie beugen.']),
+    'Wadenheben sitzend': E('Waden (Schollenmuskel)', '–',
+      ['Sitzen, Polster auf den Oberschenkeln, Ballen auf der Plattform.', 'Fersen absenken.', 'Auf die Zehenspitzen drücken.', 'Langsam zurück.'],
+      ['Mit gebeugtem Knie wird vor allem der tiefe Wadenmuskel trainiert.', 'Volle Bewegungsweite.'],
+      ['Zu schnell.', 'Halbe Wiederholungen.']),
+    'Hack Squat Maschine': E('Quadrizeps', 'Gesäß',
+      ['Rücken an das Polster, Schultern unter die Polster.', 'Füße schulterbreit auf der Plattform.', 'Tief absenken.', 'Hochdrücken, Knie nicht ganz durchstrecken.'],
+      ['Sehr gezielt für die vorderen Oberschenkel.', 'Tiefe nach Mobilität wählen.'],
+      ['Fersen heben ab.', 'Knie fallen nach innen.']),
+    'Good Mornings': E('Beinbeuger, unterer Rücken', 'Gesäß',
+      ['Stange auf dem oberen Rücken, Knie leicht gebeugt.', 'Hüfte nach hinten, Oberkörper nach vorne neigen.', 'Bis kurz vor die Waagerechte.', 'Aufrichten.'],
+      ['Mit leichtem Gewicht starten.', 'Rücken bleibt gerade.'],
+      ['Runder Rücken.', 'Zu schweres Gewicht.']),
+
+    /* ---------------- Unterarme ---------------- */
+    'Wrist Extensions': E('Unterarm-Strecker', '–',
+      ['Unterarme auf der Bank oder den Oberschenkeln, Handflächen nach unten.', 'Handgelenke hängen über die Kante.', 'Hände nach oben strecken.', 'Langsam absenken.'],
+      ['Leichtes Gewicht, viele Wiederholungen.', 'Gut als Ausgleich, z. B. bei Tennisarm-Neigung.'],
+      ['Unterarme heben sich mit.', 'Zu schwer.']),
+    'Wrist Curl': E('Unterarm-Beuger', '–',
+      ['Unterarme auflegen, Handflächen nach oben.', 'Handgelenke über die Kante.', 'Hände nach oben einrollen.', 'Langsam absenken, Stange darf in die Finger rollen.'],
+      ['Hohe Wiederholungen (15–25).', 'Volle Bewegung nutzen.'],
+      ['Mit dem Arm mitziehen.', 'Zu schnelles Tempo.']),
+    "Farmer's Walk": E('Griffkraft, Unterarme', 'Trapez, Rumpf, ganzer Körper',
+      ['Schwere Hanteln seitlich aufnehmen (Rücken gerade).', 'Aufrecht stehen, Schultern unten.', 'Mit kurzen, kontrollierten Schritten gehen.', 'Nach Strecke oder Zeit sicher absetzen.'],
+      ['In der App: Gewicht eintragen, Wiederholungen = Meter oder Sekunden.', 'Sehr gut für Griffkraft und Rumpf.'],
+      ['Schultern hängen nach vorne.', 'Rundrücken beim Aufnehmen.']),
+    'Unterarmroller': E('Unterarme', 'Schulter (statisch)',
+      ['Arme gestreckt vor dem Körper.', 'Gewicht durch Drehen der Hände aufrollen.', 'Oben angekommen langsam wieder abrollen.', 'Beide Drehrichtungen trainieren.'],
+      ['Brennt schnell – kurze Sätze reichen.', 'Arme bleiben auf Schulterhöhe oder leicht darunter.'],
+      ['Gewicht fallen lassen.', 'Arme sinken ab.']),
+    'Reverse Curls': E('Unterarme (Oberarmspeichenmuskel)', 'Bizeps',
+      ['Stange im Obergriff, schulterbreit.', 'Ellbogen am Körper.', 'Nach oben curlen.', 'Langsam absenken.'],
+      ['SZ-Stange ist angenehmer.', 'Weniger Gewicht als beim normalen Curl.'],
+      ['Handgelenke knicken ab.', 'Schwung.']),
+
+    /* ---------------- Abs ---------------- */
+    'Leg Raise': E('Gerader Bauchmuskel (unterer Teil)', 'Hüftbeuger',
+      ['Auf dem Rücken liegen oder an der Stange hängen.', 'Beine möglichst gestreckt.', 'Beine anheben und das Becken leicht einrollen.', 'Langsam absenken, ohne abzulegen.'],
+      ['Der Unterschied macht das Einrollen des Beckens – sonst arbeitet vor allem der Hüftbeuger.', 'Zu schwer? Knie anwinkeln.'],
+      ['Hohlkreuz beim Absenken.', 'Schwung.']),
+    'Cable Crunches': E('Gerader Bauchmuskel', 'Schräge Bauchmuskeln',
+      ['Vor dem Kabel knien, Seil neben dem Kopf.', 'Hüfte bleibt fest.', 'Oberkörper einrollen, Ellbogen Richtung Knie.', 'Kontrolliert zurück.'],
+      ['Gut belastbar mit Gewicht – ideal für Fortschritt beim Bauch.', 'Die Wirbelsäule rollt ein, die Hüfte bewegt sich kaum.'],
+      ['Mit den Armen ziehen.', 'Aus der Hüfte beugen statt einrollen.']),
+    'Crunches': E('Gerader Bauchmuskel', '–',
+      ['Rückenlage, Knie gebeugt, Füße am Boden.', 'Hände an den Schläfen oder vor der Brust.', 'Schultern vom Boden einrollen.', 'Langsam zurück.'],
+      ['Kleine Bewegung, volle Konzentration.', 'Ausatmen beim Hochkommen.'],
+      ['Am Kopf ziehen.', 'Schwung holen.']),
+    'Sit-Ups': E('Gerader Bauchmuskel', 'Hüftbeuger',
+      ['Rückenlage, Knie gebeugt, Füße am Boden (ggf. fixiert).', 'Oberkörper komplett aufrichten.', 'Langsam zurückrollen.', 'Wiederholen.'],
+      ['Bewegung über den Rücken abrollen.', 'Langsames Ablassen macht es härter.'],
+      ['Am Nacken ziehen.', 'Fallen lassen.']),
+    'Russian Twists': E('Schräge Bauchmuskeln', 'Gerader Bauchmuskel',
+      ['Sitzen, Oberkörper leicht zurückgelehnt, Füße am Boden oder angehoben.', 'Hände oder Gewicht vor der Brust.', 'Oberkörper abwechselnd nach links und rechts drehen.', 'Rücken bleibt gerade.'],
+      ['Die Drehung kommt aus dem Oberkörper, nicht nur aus den Armen.', 'Langsam statt hektisch.'],
+      ['Runder Rücken.', 'Nur die Arme bewegen.']),
+    'Hängendes Beinheben': E('Gerader Bauchmuskel (unterer Teil)', 'Hüftbeuger, Griffkraft',
+      ['An der Stange hängen.', 'Beine kontrolliert nach oben heben.', 'Becken am Ende einrollen.', 'Langsam absenken, ohne zu schwingen.'],
+      ['Leichter: Knie anziehen.', 'Schwung vermeiden.'],
+      ['Schwingen.', 'Beine fallen lassen.']),
+    'Ab Wheel Rollout': E('Gerader Bauchmuskel', 'Latissimus, Schulter, Rumpf',
+      ['Auf den Knien, Rad unter den Schultern.', 'Bauch fest anspannen.', 'Rad nach vorne rollen, so weit du ohne Hohlkreuz kommst.', 'Mit Bauchspannung zurückrollen.'],
+      ['Anfangs nur kurze Strecke rollen.', 'Becken leicht eingerollt halten.'],
+      ['Hohlkreuz.', 'Zu weit rollen.']),
+    'Seitliche Planks': E('Schräge Bauchmuskeln', 'Seitlicher Rumpf, Gesäß',
+      ['Seitlich auf den Unterarm stützen, Ellbogen unter der Schulter.', 'Hüfte anheben, Körper bildet eine Linie.', 'Position halten.', 'Seite wechseln.'],
+      ['In der App: Zeit in Sekunden als Wiederholungen eintragen.', 'Leichter: unteres Knie am Boden.'],
+      ['Hüfte sinkt ab.', 'Nach vorne kippen.']),
+    'Mountain Climbers': E('Rumpf', 'Schulter, Hüftbeuger, Ausdauer',
+      ['Liegestützposition.', 'Abwechselnd die Knie zur Brust ziehen.', 'Hüfte bleibt tief.', 'Tempo nach Ziel: langsam für Rumpf, schnell für Kondition.'],
+      ['Schultern über den Händen halten.', 'Gut als Aufwärmen oder Finisher.'],
+      ['Hüfte geht hoch.', 'Hände rutschen nach vorne.']),
+    'Planks': E('Rumpf (gerader und querer Bauchmuskel)', 'Schulter, Gesäß',
+      ['Auf die Unterarme stützen, Ellbogen unter den Schultern.', 'Körper bildet eine gerade Linie von Kopf bis Fuß.', 'Bauch und Gesäß anspannen.', 'Position halten, ruhig weiteratmen.'],
+      ['Lieber 3 × 30 Sekunden sauber als 2 Minuten mit durchhängender Hüfte.', 'In GymLog mit der Stoppuhr erfassen.'],
+      ['Hüfte hängt durch oder steht zu hoch.', 'Luft anhalten.']),
+    'Dead Hang': E('Griffkraft, Unterarme', 'Schulter, Latissimus',
+      ['An die Stange greifen, etwa schulterbreit.', 'Füße vom Boden lösen.', 'Locker hängen, Schultern leicht aktiv.', 'So lange halten, wie es geht.'],
+      ['Gut für Griffkraft und zur Entlastung der Wirbelsäule.', 'Kreide hilft bei schwitzigen Händen.'],
+      ['Schultern komplett passiv „einhängen" bei Schulterproblemen.', 'Abspringen statt kontrolliert loslassen.']),
+    'Bench Press': E('Brust', 'Vordere Schulter, Trizeps',
+      ['Auf die Bank legen, Augen etwa unter der Stange.', 'Etwas mehr als schulterbreit greifen, Schulterblätter zusammen.', 'Stange kontrolliert zur unteren Brust absenken.', 'Kraftvoll nach oben drücken.'],
+      ['Füße fest am Boden, Spannung im ganzen Körper.', 'Bei schweren Sätzen mit Spotter oder Sicherheitsablagen.'],
+      ['Stange abprallen lassen.', 'Gesäß hebt ab.'])
   };
-};
 
-SCREENS.muscle = (entry, host) => {
-  const g = LEX.find(x => x.id === entry.params.id) || LEX[0];
-  const active = Active.names();
-  const exs = Pool.all().filter(e => e.muscle === g.id).sort((a, b) => (a.name < b.name ? -1 : 1));
-  const title = t => `<div class="group-title"><span>${t}</span></div>`;
-  return {
-    title: g.id,
-    body: `<div class="list-wrap" style="gap:22px">
-      <div class="lx-hero"><div class="lx-nick">${esc(g.nick)}</div><div class="h1" style="font-size:30px">${esc(g.id)}</div><div class="headline">${esc(g.tag)}</div><div class="muted" style="line-height:1.45">${esc(g.kurz)}</div></div>
-      <div>${title('Die Muskeln')}<div class="col g8">${g.muskeln.map(m => `<details class="lx-m"><summary><span class="col g4" style="flex:1"><span class="headline">${esc(m[0])}</span><span class="lx-latin">${esc(m[1])}</span></span><span class="chev">${ic('chevR')}</span></summary><div class="lx-body">${esc(m[2])}</div></details>`).join('')}</div></div>
-      <div>${title('Gegenspieler')}<div class="card r16 sub" style="line-height:1.45">${esc(g.gegen)}</div></div>
-      <div>${title('Wo du ihn im Alltag brauchst')}<div class="card r16 sub" style="line-height:1.45">${esc(g.alltag)}</div></div>
-      <div>${title('Übungen in GymLog')}<div class="card r16 col g12"><div class="lx-chips">${exs.map(e => `<span class="lx-chip ${active.has(e.name) ? 'on' : ''}">${esc(e.name)}</span>`).join('')}</div><div class="caption muted">Farbig = in deinem Übungs-Pool aktiv.</div></div></div>
-      <div>${title('Wusstest du?')}<div class="card r16"><ul class="lx-list">${g.fun.map(t => `<li><span>${esc(t)}</span></li>`).join('')}</ul></div></div>
-      <div>${title('Typische Fehler')}<div class="card r16"><ul class="lx-list bad">${g.fehler.map(t => `<li><span>${esc(t)}</span></li>`).join('')}</ul></div></div>
-      <div class="card tinted-12 r16 col g8"><div class="headline accent">Profi-Tipp</div><div style="line-height:1.45">${esc(g.tipp)}</div></div>
-    </div>`
-  };
-};
+  /* ---------------- Wissens-Artikel ---------------- */
+  const articles = [
+    {
+      id: 'muskelaufbau', cat: 'Grundlagen', icon: 'dumbbell', title: 'Wie Muskeln wachsen',
+      teaser: 'Was im Körper passiert, wenn du trainierst – und was das fürs Training heißt.',
+      sections: [
+        { p: ['Muskelwachstum (Hypertrophie) entsteht, wenn du einen Muskel regelmäßig stärker forderst, als er es gewohnt ist, und ihm danach genug Zeit und Baumaterial zur Erholung gibst. Das Training selbst ist der Reiz – gewachsen wird in der Pause.'] },
+        { h: 'Die drei Zutaten', list: ['Mechanische Spannung: Der wichtigste Faktor. Entsteht, wenn der Muskel gegen hohen Widerstand arbeitet – vor allem in den letzten, schweren Wiederholungen eines Satzes.', 'Genug Volumen: Mehrere harte Sätze pro Muskel und Woche.', 'Erholung: Schlaf, ausreichend Eiweiß und Energie, Pausentage.'] },
+        { h: 'Was das für dein Training heißt', list: ['Sätze nah an die Grenze bringen (siehe „RIR").', 'Mit der Zeit mehr Gewicht oder Wiederholungen schaffen (siehe „Progressive Overload").', 'Jeden Muskel etwa 2× pro Woche trainieren.', 'Geduld: Sichtbare Veränderungen brauchen meist Monate, nicht Wochen.'] }
+      ]
+    },
+    {
+      id: 'saetze', cat: 'Grundlagen', icon: 'hash', title: 'Sätze & Wiederholungen',
+      teaser: 'Wie viele Wiederholungen, wie viele Sätze – und warum es mehrere richtige Antworten gibt.',
+      sections: [
+        { p: ['Eine Wiederholung ist eine komplette Bewegung, ein Satz eine Reihe von Wiederholungen ohne Pause. Für Muskelaufbau funktioniert ein breiter Bereich – entscheidend ist, dass der Satz anstrengend ist.'] },
+        { h: 'Wiederholungsbereiche', list: ['1–5 Wdh.: vor allem Maximalkraft, sehr schwere Gewichte.', '6–12 Wdh.: der klassische Bereich für Muskelaufbau.', '12–20+ Wdh.: ebenfalls gut für Muskelaufbau, mehr Ausdauer – praktisch für kleine Muskeln und Isolationsübungen.'] },
+        { h: 'Faustregeln', list: ['Große Grundübungen (Kniebeugen, Bankdrücken, Rudern): eher 5–10 Wdh.', 'Isolationsübungen (Seitheben, Curls, Waden): eher 10–20 Wdh.', 'Pro Übung meist 2–4 Arbeitssätze.', 'Aufwärmsätze zählen nicht als Arbeitssätze.'] }
+      ]
+    },
+    {
+      id: 'overload', cat: 'Grundlagen', icon: 'chartUp', title: 'Progressive Overload',
+      teaser: 'Das wichtigste Prinzip für Fortschritt – und wie GymLog dir dabei hilft.',
+      sections: [
+        { p: ['Dein Körper passt sich nur an, wenn die Anforderung mit der Zeit steigt. Wer jede Woche dasselbe Gewicht für dieselben Wiederholungen bewegt, bleibt irgendwann stehen. Progressive Overload heißt: Schritt für Schritt ein bisschen mehr.'] },
+        { h: 'Möglichkeiten zu steigern', list: ['Mehr Wiederholungen mit gleichem Gewicht.', 'Mehr Gewicht bei gleichen Wiederholungen.', 'Ein zusätzlicher Satz.', 'Bessere Technik und kontrollierteres Tempo.'] },
+        { h: 'Einfache Methode: Doppelte Progression', list: ['Wähle einen Bereich, z. B. 8–12 Wiederholungen.', 'Steigere die Wiederholungen von Training zu Training.', 'Schaffst du in allen Sätzen 12, erhöhe das Gewicht (z. B. +2,5 kg) und starte wieder bei 8.'] },
+        { h: 'So hilft GymLog', p: ['In jeder Übung siehst du „Letztes Training" und das Gewicht ist vorausgefüllt – du weißt also sofort, was du schlagen musst. Unter Progress → Bestleistungen siehst du deinen Verlauf als Diagramm.'] }
+      ]
+    },
+    {
+      id: 'rir', cat: 'Grundlagen', icon: 'bolt', title: 'Intensität: RIR & Muskelversagen',
+      teaser: 'Wie hart ein Satz sein sollte – und warum du nicht immer bis zum Versagen gehen musst.',
+      sections: [
+        { p: ['RIR steht für „Reps in Reserve" – wie viele Wiederholungen du am Ende eines Satzes noch geschafft hättest. RIR 0 bedeutet Muskelversagen: Die nächste Wiederholung wäre nicht mehr sauber möglich.'] },
+        { h: 'Empfehlung', list: ['Die meisten Arbeitssätze mit 1–3 RIR beenden.', 'Bei Isolationsübungen (Curls, Seitheben) darfst du öfter bis 0–1 RIR gehen.', 'Bei schweren Grundübungen (Kniebeugen, Kreuzheben) eher 2–3 RIR – die Technik leidet sonst und die Erholung dauert länger.'] },
+        { h: 'Tipp', p: ['Schätze am Satzende kurz ab: „Wie viele wären noch gegangen?" Mit der Zeit wirst du darin richtig gut – und das ist eines der wichtigsten Werkzeuge für effektives Training.'] }
+      ]
+    },
+    {
+      id: 'pausen', cat: 'Grundlagen', icon: 'timer', title: 'Pausenzeiten',
+      teaser: 'Wie lange du zwischen Sätzen pausieren solltest – und wie du den Timer einstellst.',
+      sections: [
+        { p: ['Längere Pausen erlauben dir, im nächsten Satz wieder mehr Leistung zu bringen. Zu kurze Pausen kosten Gewicht und Wiederholungen – und damit Trainingsreiz.'] },
+        { h: 'Richtwerte', list: ['Schwere Grundübungen: 2–3 Minuten.', 'Mittlere Übungen und Maschinen: 1,5–2 Minuten.', 'Isolationsübungen: 1–1,5 Minuten.', 'Bauch, Waden, Finisher: 30–60 Sekunden.'] },
+        { h: 'In GymLog', p: ['Der Pausen-Timer startet automatisch nach jedem eingetragenen Satz – lautlos, ohne Ton oder Vibration. Die Länge stellst du unter Mehr → Einstellungen ein, mit −15/+15 passt du sie spontan an.'] }
+      ]
+    },
+    {
+      id: 'onerm', cat: 'Grundlagen', icon: 'trophy', title: '1RM & Bestleistungen',
+      teaser: 'Was „Geschätztes 1RM" in der App bedeutet und wie es berechnet wird.',
+      sections: [
+        { p: ['1RM (One-Rep-Max) ist das Gewicht, das du genau einmal sauber bewegen könntest. Statt es riskant auszutesten, schätzt GymLog es aus deinen Sätzen.'] },
+        { h: 'Die Formel (Epley)', p: ['1RM ≈ Gewicht × (1 + Wiederholungen ÷ 30). Beispiel: 80 kg × 8 Wdh. → etwa 101 kg.'] },
+        { h: 'Warum das nützlich ist', list: ['Du kannst Sätze mit unterschiedlichen Wiederholungen vergleichen: 90 kg × 5 und 80 kg × 10 ergeben ein ähnliches 1RM.', 'Deshalb zeigt GymLog als Bestleistung den Satz mit dem höchsten geschätzten 1RM – nicht unbedingt das höchste Gewicht.', 'Die Schätzung ist bei 1–10 Wiederholungen am genauesten.'] }
+      ]
+    },
+    {
+      id: 'splits', cat: 'Trainingsplanung', icon: 'clipboard', title: 'Trainingssplits',
+      teaser: 'Push/Pull/Legs, Upper/Lower oder Ganzkörper – welcher Plan zu dir passt.',
+      sections: [
+        { p: ['Ein Split legt fest, welche Muskeln an welchem Tag trainiert werden. Es gibt keinen „besten" Split – der beste ist der, den du regelmäßig durchziehst.'] },
+        { h: 'Ganzkörper', p: ['Jedes Training trifft alle großen Muskelgruppen. Ideal bei 2–3 Trainings pro Woche und für Einsteiger. In GymLog: Plan „Ganzkörper".'] },
+        { h: 'Upper / Lower', p: ['Abwechselnd Oberkörper und Unterkörper. Passt perfekt zu 4 Trainings pro Woche – jeder Muskel wird 2× trainiert. In GymLog: „Upper Body" und „Lower Body".'] },
+        { h: 'Push / Pull / Legs', p: ['Push = Brust, Schulter, Trizeps. Pull = Rücken, Bizeps. Legs = Beine. Gut bei 3 oder 6 Trainings pro Woche. In GymLog: „Push Day", „Pull Day", „Leg Day".'] },
+        { h: 'Entscheidungshilfe', list: ['2–3 Tage/Woche → Ganzkörper', '4 Tage/Woche → Upper/Lower', '5–6 Tage/Woche → Push/Pull/Legs'] }
+      ]
+    },
+    {
+      id: 'volumen', cat: 'Trainingsplanung', icon: 'stack', title: 'Trainingsvolumen',
+      teaser: 'Wie viele Sätze pro Muskel und Woche sinnvoll sind.',
+      sections: [
+        { p: ['Volumen meint hier die Anzahl harter Arbeitssätze pro Muskel und Woche. Mehr ist bis zu einem Punkt besser – darüber hinaus leidet die Erholung.'] },
+        { h: 'Richtwerte', list: ['Einsteiger: etwa 6–10 Sätze pro Muskel und Woche.', 'Fortgeschrittene: etwa 10–20 Sätze.', 'Lieber auf 2 Trainings verteilen als alles an einem Tag.'] },
+        { h: 'Gesamtvolumen in GymLog', p: ['Unter Progress siehst du das „Gesamtvolumen" (Gewicht × Wiederholungen aller Sätze). Es ist ein grober Indikator, ob du insgesamt mehr leistest – vergleiche ihn über Wochen, nicht von Tag zu Tag.'] }
+      ]
+    },
+    {
+      id: 'aufwaermen', cat: 'Trainingsplanung', icon: 'run', title: 'Aufwärmen',
+      teaser: 'Kurz, gezielt und ohne dich vorher zu ermüden.',
+      sections: [
+        { list: ['5 Minuten lockeres Cardio (Rad, Crosstrainer, zügiges Gehen).', 'Ein paar dynamische Bewegungen für die Gelenke, die du gleich belastest (Armkreisen, Hüftkreisen, Ausfallschritte).', 'Vor der ersten schweren Übung 2–3 Aufwärmsätze mit steigendem Gewicht, z. B. 50 % × 10, 70 % × 5, 85 % × 2.'] },
+        { h: 'Was du dir sparen kannst', p: ['Langes statisches Dehnen direkt vor dem Training ist nicht nötig. Spätere Übungen im Training brauchen meist keine eigenen Aufwärmsätze mehr, wenn der Muskel schon warm ist.'] }
+      ]
+    },
+    {
+      id: 'deload', cat: 'Trainingsplanung', icon: 'resume', title: 'Deload & Plateaus',
+      teaser: 'Wenn es nicht mehr weitergeht: was du tun kannst.',
+      sections: [
+        { p: ['Ein Plateau heißt: Über mehrere Wochen keine Steigerung. Das ist normal und hat meist einfache Ursachen.'] },
+        { h: 'Checkliste', list: ['Schlaf und Ernährung – meist der größte Hebel.', 'Werden die Sätze wirklich hart genug (RIR 1–3)?', 'Steigerst du gezielt oder trainierst du „nach Gefühl"? Ein Blick in den Verlauf hilft.', 'Andere Übungsvariante oder anderer Wiederholungsbereich für 4–6 Wochen.'] },
+        { h: 'Deload', p: ['Eine leichtere Woche (z. B. halbe Satzzahl, etwas weniger Gewicht) alle 6–10 Wochen oder wenn du dich dauerhaft platt fühlst. Danach geht es meist mit frischer Kraft weiter.'] }
+      ]
+    },
+    {
+      id: 'regeneration', cat: 'Regeneration & Ernährung', icon: 'clock', title: 'Schlaf & Regeneration',
+      teaser: 'Warum die Pause genauso zum Training gehört wie die Hantel.',
+      sections: [
+        { p: ['Muskeln wachsen in der Erholungsphase. Ein Muskel braucht nach einem harten Training meist 48–72 Stunden, bis er wieder voll belastbar ist.'] },
+        { h: 'Die wichtigsten Faktoren', list: ['Schlaf: 7–9 Stunden. Zu wenig Schlaf kostet Kraft, Fortschritt und Motivation.', 'Den gleichen Muskel nicht an zwei Tagen hintereinander hart trainieren.', 'Stress beeinflusst die Erholung ebenfalls.', 'Leichte Bewegung (Spaziergang, lockeres Radfahren) an Pausentagen kann helfen.'] }
+      ]
+    },
+    {
+      id: 'muskelkater', cat: 'Regeneration & Ernährung', icon: 'info', title: 'Muskelkater',
+      teaser: 'Was er bedeutet – und was nicht.',
+      sections: [
+        { p: ['Muskelkater entsteht durch kleine Verletzungen in der Muskulatur, vor allem nach ungewohnten Belastungen und betonter Absenkphase. Er ist kein Maß dafür, wie gut ein Training war.'] },
+        { list: ['Neue Übungen oder eine lange Pause machen besonders viel Muskelkater – das wird mit der Zeit weniger.', 'Leichte Bewegung hilft meist mehr als komplette Ruhe.', 'Bei starkem Muskelkater den betroffenen Muskel nicht schwer trainieren.', 'Schmerzen in Gelenken oder stechende Schmerzen sind kein Muskelkater – dann lieber ärztlich abklären.'] }
+      ]
+    },
+    {
+      id: 'ernaehrung', cat: 'Regeneration & Ernährung', icon: 'stack', title: 'Eiweiß & Ernährung – die Basics',
+      teaser: 'Was für Training und Erholung wirklich zählt.',
+      sections: [
+        { p: ['Training gibt den Reiz, Ernährung liefert das Baumaterial. Die Grundlagen sind wichtiger als jedes Supplement.'] },
+        { h: 'Eiweiß', list: ['Für Kraftsportler werden häufig etwa 1,6–2,2 g Eiweiß pro kg Körpergewicht und Tag empfohlen.', 'Auf 3–5 Mahlzeiten verteilen.', 'Gute Quellen: Milchprodukte (Quark, Skyr), Eier, Fleisch, Fisch, Hülsenfrüchte, Tofu.'] },
+        { h: 'Sonst wichtig', list: ['Genug Energie insgesamt – mit zu wenig Essen wird Muskelaufbau schwer.', 'Kohlenhydrate liefern Energie fürs Training.', 'Ausreichend trinken.', 'Bei Vorerkrankungen oder speziellen Zielen am besten mit Arzt oder Ernährungsberatung abstimmen.'] }
+      ]
+    },
+    {
+      id: 'laufen', cat: 'Regeneration & Ernährung', icon: 'run', title: 'Laufen & Krafttraining kombinieren',
+      teaser: 'Wie beides zusammenpasst, ohne sich gegenseitig auszubremsen.',
+      sections: [
+        { p: ['Kraft- und Lauftraining ergänzen sich gut: Kräftigere Beine und ein stabiler Rumpf machen dich als Läufer robuster, und Laufen verbessert die Erholung zwischen Sätzen.'] },
+        { h: 'Planungstipps', list: ['Harte Beintage und harte Läufe (Intervalle, lange Läufe) nicht direkt hintereinander legen.', 'Am selben Tag: zuerst das, was dir wichtiger ist.', 'Lockere Läufe sind gut mit Oberkörpertagen kombinierbar.', 'Für Läufer besonders wertvoll: Kniebeugen, Rumänisches Kreuzheben, Ausfallschritte, Wadenheben, Planks.'] },
+        { h: 'In GymLog', p: ['Unter Lauf-Stats trägst du Distanz und Zeit ein, die App berechnet deine Pace.'] }
+      ]
+    },
+    {
+      id: 'technik', cat: 'Technik & Sicherheit', icon: 'check', title: 'Atmung & Rumpfspannung',
+      teaser: 'Stabil bleiben unter dem Gewicht.',
+      sections: [
+        { list: ['Vor der Wiederholung tief in den Bauch einatmen und den Rumpf anspannen, als würde dich jemand in den Bauch boxen.', 'Bei schweren Grundübungen die Luft während der schwersten Phase kurz halten, danach ausatmen.', 'Bei leichteren Übungen: beim Anstrengen ausatmen, beim Zurückführen einatmen.', 'Wer Bluthochdruck oder Herzprobleme hat, sollte Pressatmung vorher ärztlich abklären.'] }
+      ]
+    },
+    {
+      id: 'bewegungsweg', cat: 'Technik & Sicherheit', icon: 'ruler', title: 'Saubere Technik & voller Bewegungsweg',
+      teaser: 'Warum weniger Gewicht oft mehr bringt.',
+      sections: [
+        { list: ['Nutze den Bewegungsweg, den du sauber kontrollieren kannst – besonders die gedehnte Position ist sehr effektiv für Muskelaufbau.', 'Absenkphase kontrollieren (ca. 2–3 Sekunden), nicht fallen lassen.', 'Kein Schwung: Wenn sich der Oberkörper mitbewegt, ist das Gewicht zu schwer.', 'Schmerz in Gelenken ist ein Stoppsignal – Übung anpassen oder ersetzen.', 'Neue Übungen erst mit leichtem Gewicht lernen. Im Zweifel einen Trainer im Studio fragen.'] }
+      ]
+    }
+  ];
 
-SCREENS.lexInfo = (entry, host) => {
-  const d = LEX_INFO[entry.params.kind] || LEX_INFO.grow;
-  let inner = '';
-  if (d.steps) {
-    inner += `<div class="col g12">${d.steps.map(s => `<div class="card r16 col g8"><div class="headline accent">${esc(s[0])}</div><div style="line-height:1.45">${esc(s[1])}</div></div>`).join('')}</div>`;
-    inner += `<div><div class="group-title"><span>Richtwerte</span></div><div class="col g8">${d.numbers.map(n => `<div class="card r16 row top" style="gap:14px"><div class="headline accent" style="min-width:76px">${esc(n[0])}</div><div class="sub muted" style="line-height:1.4">${esc(n[1])}</div></div>`).join('')}</div></div>`;
-    inner += `<div class="caption muted" style="line-height:1.4;padding:0 4px">${esc(d.note)}</div>`;
-  } else {
-    inner += `<div class="col g8">${d.list.map(([a, b]) => `<div class="card r16 col g4"><div class="headline">${esc(a)}</div><div class="sub muted" style="line-height:1.45">${esc(b)}</div></div>`).join('')}</div>`;
-  }
-  return {
-    title: d.title,
-    body: `<div class="list-wrap" style="gap:20px"><div class="col g8"><div class="h1" style="font-size:30px">${esc(d.title)}</div><div class="muted">${esc(d.intro)}</div></div>${inner}</div>`
-  };
-};
+  window.LEXIKON = { exercises, articles };
+})();
