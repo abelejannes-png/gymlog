@@ -90,6 +90,7 @@ const setLabel = (name, s) => (TIMED.has(name) ? fmtMinSec(s.reps) : `${fmtW(s.w
 const sortStr = arr => [...arr].sort((a, b) => (a < b ? -1 : a > b ? 1 : 0));
 
 function toast(msg) {
+  document.querySelectorAll('.toast').forEach(x => x.remove());
   const t = document.createElement('div');
   t.className = 'toast';
   t.textContent = msg;
@@ -420,7 +421,12 @@ const Backup = {
       deadHangHistory: Data.deadHang(),
       plankHistory: Data.planks(),
       customExercises: store.get('customExercises', []),
-      trainingPlans: Plans.load()
+      trainingPlans: Plans.load(),
+      // Nur Web-App (die iOS-App ignoriert diese Felder beim Import):
+      mealLog: store.get('mealLog', []),
+      mealFoods: store.get('mealFoods', []),
+      mealPrices: store.get('mealPrices', {}),
+      mealGoal: store.get('mealGoal', null)
     });
   },
   apply(b) {
@@ -433,6 +439,10 @@ const Backup = {
     Data.savePlanks(b.plankHistory || []);
     Pool.saveCustom(b.customExercises || []);
     Plans.save(b.trainingPlans || []);
+    if (Array.isArray(b.mealLog)) store.set('mealLog', b.mealLog);
+    if (Array.isArray(b.mealFoods)) store.set('mealFoods', b.mealFoods);
+    if (b.mealPrices) store.set('mealPrices', b.mealPrices);
+    if (b.mealGoal) store.set('mealGoal', b.mealGoal);
     const active = Active.names();
     (b.customExercises || []).forEach(e => active.add(e.name));
     (b.trainingPlans || []).forEach(p => p.exerciseNames.forEach(n => active.add(n)));
@@ -467,6 +477,7 @@ document.addEventListener('change', dispatch('data-change'));
 const TABS = [
   { id: 'home', label: 'Home', icon: 'home', root: 'home' },
   { id: 'calendar', label: 'Kalender', icon: 'calendar', root: 'calendar' },
+  { id: 'meal', label: 'Essen', icon: 'meal', root: 'meal' },
   { id: 'progress', label: 'Progress', icon: 'chart', root: 'progressHub' },
   { id: 'more', label: 'Mehr', icon: 'more', root: 'more' }
 ];
@@ -948,6 +959,7 @@ SCREENS.home = (entry, host) => {
         <div class="card r18 col g8"><span class="caption muted">Diese Woche</span><span class="h1" style="font-size:28px">${thisWeek.length}</span><span class="caption muted">${thisWeek.length === 1 ? 'Training' : 'Trainings'}</span></div>
         <div class="card r18 col g8"><span class="caption muted">Gesamtzeit</span><span class="h1" style="font-size:28px">${durText}</span>${miniBars(daily, 28)}</div>
       </div>
+      ${typeof mealHomeCard === 'function' ? mealHomeCard(host) : ''}
       <div class="card r18 center sub italic">${esc(quote)}</div>
       ${(() => { const arts = LEX().articles; if (!arts.length) return ''; const a = arts[dayOfYear % arts.length];
         return `<div class="card r18 col g8 tap" data-on="${host.on(() => push('lexArticle', { id: a.id }))}">
