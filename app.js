@@ -1764,6 +1764,7 @@ SCREENS.more = (entry, host) => {
       <div><div class="group-title">Training</div><div class="group">
         ${li('clipboard', 'Trainingspläne', () => push('plans'))}
         ${li('checklist', 'Übungs-Katalog', () => push('catalog'))}
+        ${li('book', 'Muskel-Lexikon', () => push('lexicon'))}
         ${li('run', 'Lauf-Stats', () => push('runs'))}
       </div></div>
       <div><div class="group-title">App</div><div class="group">
